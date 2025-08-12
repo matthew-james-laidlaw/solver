@@ -1,9 +1,6 @@
 #include "Expression.hpp"
 #include "Visitor.hpp"
 
-#include <stdexcept>
-#include <format>
-
 Evaluator::Evaluator(std::unordered_map<string, f64> const& variables)
 	: m_variables(variables)
 {}

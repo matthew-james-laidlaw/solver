@@ -1,7 +1,13 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
+#include <format>
+#include <iostream>
+#include <print>
+#include <stdexcept>
 #include <string>
+#include <vector>
 
 using u8  = std::uint8_t;
 using u16 = std::uint16_t;
