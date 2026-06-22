@@ -1,0 +1,38 @@
+#pragma once
+
+#include <any>
+
+struct Expression
+{
+	virtual ~Expression() = default;
+};
+
+struct Literal : public Expression
+{
+	std::any value;
+
+	Literal(std::any value)
+		: value(value)
+	{}
+};
+
+struct Unary : public Expression
+{
+	char op;
+	Expression* operand;
+
+	Unary(char op, Expression* operand)
+		: op(op), operand(operand)
+	{}
+};
+
+struct Binary : public Expression
+{
+	char op;
+	Expression* lhs;
+	Expression* rhs;
+
+	Binary(char op, Expression* lhs, Expression* rhs)
+		: op(op), lhs(lhs), rhs(rhs)
+	{}
+};
