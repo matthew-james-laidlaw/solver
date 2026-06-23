@@ -5,17 +5,17 @@
 
 auto ParsePrimary() -> Parser<Expression*>
 {
-    return [](std::span<std::string> in) -> ParseResult<Expression*>
+    return [](std::span<std::string> source) -> ParseResult<Expression*>
     {
-        if (auto n = Number()(in))
+        if (auto n = Number()(source))
         {
             return n;
         }
-        if (auto b = Boolean()(in))
+        if (auto b = Boolean()(source))
         {
             return b;
         }
-        if (auto s = String()(in))
+        if (auto s = String()(source))
         {
             return s;
         }
@@ -25,69 +25,111 @@ auto ParsePrimary() -> Parser<Expression*>
 
 auto ParseUnary() -> Parser<Expression*>
 {
-	return [](std::span<std::string> in) -> ParseResult<Expression*>
+	return [](std::span<std::string> source) -> ParseResult<Expression*>
     {
         for (char op : { '!', '-' })
         {
-            if (auto o = Character(op)(in))
+            if (auto c = Character(op)(source))
             {
-                if (auto rest = ParseUnary()(o->second))
+                if (auto rhs = ParseUnary()(c->second))
                 {
-                    return std::pair{new Unary{op, rest->first}, rest->second};
+                    return std::pair{new Unary{op, rhs->first}, rhs->second};
                 }
                 return std::nullopt;
             }
         }
-        return ParsePrimary()(in);
+        return ParsePrimary()(source);
     };
 }
 
-auto ParseFactor() -> Parser<Expression*>
+auto OneOf(std::initializer_list<char> chars)
+    -> Parser<char>
 {
-    return [](std::span<std::string> in) -> ParseResult<Expression*>
+    return [chars](std::span<std::string> source)
+        -> ParseResult<char>
     {
-        auto lhs = ParseUnary()(in);
-        if (!lhs)
+        for (char c : chars)
+        {
+            if (auto r = Character(c)(source))
+            {
+                return std::pair{c, r->second};
+            }
+        }
+
+        return std::nullopt;
+    };
+}
+
+template<typename SubParser>
+auto ParseLeftAssociative(
+    std::span<std::string> source,
+    SubParser sub,
+    std::initializer_list<char> ops)
+    -> ParseResult<Expression*>
+{
+    auto lhs = sub(source);
+    if (!lhs)
+    {
+        return std::nullopt;
+    }
+
+    auto expr = lhs->first;
+    auto rest = lhs->second;
+
+    while (auto op = OneOf(ops)(rest))
+    {
+        auto rhs = sub(op->second);
+        if (!rhs)
         {
             return std::nullopt;
         }
 
-        for (char op : { '/', '*' })
-        {
-            if (auto o = Character(op)(lhs->second))
-            {
-                if (auto rest = ParseUnary()(o->second))
-                {
-                    return std::pair{ new Binary{ op, lhs->first, rest->first }, rest->second };
-                }
-                return std::nullopt;
-            }
-        }
+        expr = new Binary{op->first, expr, rhs->first};
+        rest = rhs->second;
+    }
 
-        return lhs;
+    return std::pair{expr, rest};
+}
+
+auto ParseFactor() -> Parser<Expression*>
+{
+    return [](std::span<std::string> source)
+    {
+        return ParseLeftAssociative(
+            source,
+            ParseUnary(),
+            {'*', '/'});
     };
 }
 
 auto ParseTerm() -> Parser<Expression*>
 {
-    return [](std::span<std::string> in) -> ParseResult<Expression*>
+    return [](std::span<std::string> source)
     {
-        auto lhs = ParseFactor()(in);
+        return ParseLeftAssociative(
+            source,
+            ParseFactor(),
+            {'+', '-'});
+    };
+}
+
+auto ParseEquality() -> Parser<Expression*>
+{
+    return [](std::span<std::string> source) -> ParseResult<Expression*>
+    {
+        auto lhs = ParseTerm()(source);
         if (!lhs)
         {
             return std::nullopt;
         }
 
-        for (char op : { '-', '+' })
+        if (auto c = Character('=')(lhs->second))
         {
-            if (auto o = Character(op)(lhs->second))
+            if (auto rhs = ParseTerm()(c->second))
             {
-                if (auto rest = ParseFactor()(o->second))
-                {
-                    return std::pair{ new Binary{ op, lhs->first, rest->first }, rest->second };
-                }
-                return std::nullopt;
+                return std::pair{ new Equality{ lhs->first, rhs->first }, rhs->second };
             }
+            return std::nullopt;
         }
 
         return lhs;
@@ -121,12 +163,12 @@ auto Show(Expression* e) -> void
         Show(un->operand);
         std::cout << ")";
     }
-    else if (auto* bi = dynamic_cast<Binary*>(e))
+    else if (auto* bin = dynamic_cast<Binary*>(e))
     {
-        std::cout << "Binary(" << bi->op << ", ";
-        Show(bi->lhs);
+        std::cout << "Binary(" << bin->op << ", ";
+        Show(bin->lhs);
         std::cout << ", ";
-        Show(bi->rhs);
+        Show(bin->rhs);
         std::cout << ")";
     }
     else
@@ -147,22 +189,24 @@ auto PrintTokens(std::span<std::string> const& tokens) -> void
 auto main() -> int
 {
     std::vector<std::vector<std::string>> tests = {
-        { "42" },
-        { "-", "42" },
-        { "!", "true" },
-        { "!", "!", "true" },
-        { "-", "\"", "oops", "\""},
-        { "!" },
-        { "1", "+", "2" },
+        // { "42" },
+        // { "-", "42" },
+        // { "!", "true" },
+        // { "!", "!", "true" },
+        // { "-", "\"", "oops", "\""},
+        // { "!" },
+        // { "1", "+", "2" },
+        // { "3", "*", "2", "+", "1"},
+        { "x", "+", "5", "=", "8" },
     };
 
     for (auto& test : tests)
     {
-        auto r = ParseTerm()(std::span(test));
         PrintTokens(test);
-        if (r)
+        auto term = ParseEquality()(std::span(test));
+        if (term)
         {
-            Show(r->first);
+            Show(term->first);
         }
         else
         {

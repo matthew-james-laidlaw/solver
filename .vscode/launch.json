@@ -1,16 +1,16 @@
 {
     "configurations": [
         {
-            "name": "(lldb) Launch",
-            "type": "cppdbg",
+            "name": "Solver",
+            "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/lox-example",
+            "program": "${workspaceFolder}/build/Debug/solver.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb"
+            "console": "internalConsole",
+            "preLaunchTask": "CMake: build"
         }
     ]
 }

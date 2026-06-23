@@ -36,3 +36,13 @@ struct Binary : public Expression
 		: op(op), lhs(lhs), rhs(rhs)
 	{}
 };
+
+struct Equality : public Expression
+{
+	Expression* lhs;
+	Expression* rhs;
+
+	Equality(Expression* lhs, Expression* rhs)
+		: lhs(lhs), rhs(rhs)
+	{}
+};
