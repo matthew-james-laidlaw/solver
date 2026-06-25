@@ -1,18 +1,19 @@
 #pragma once
 
-#include <any>
+#include <optional>
 
 struct Expression
 {
 	virtual ~Expression() = default;
 };
 
-struct Literal : public Expression
+struct Term : public Expression
 {
-	std::any value;
+	int number;
+	std::optional<char> variable;
 
-	Literal(std::any value)
-		: value(value)
+	Term(int number, std::optional<char> variable)
+		: number(number), variable(variable)
 	{}
 };
 

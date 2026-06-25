@@ -16,7 +16,7 @@ using Parser = std::function<ParseResult<T>(std::span<std::string>)>;
 
 using Predicate = std::function<bool(char)>;
 
-auto Satisfy(Predicate pred) -> Parser<char>
+inline auto Satisfy(Predicate pred) -> Parser<char>
 {
 	return [pred](std::span<std::string> source) -> ParseResult<char>
 	{
@@ -28,7 +28,7 @@ auto Satisfy(Predicate pred) -> Parser<char>
 	};
 }
 
-auto Character(char expected) -> Parser<char>
+inline auto Character(char expected) -> Parser<char>
 {
 	return Satisfy([expected](char actual)
 	{
@@ -36,73 +36,141 @@ auto Character(char expected) -> Parser<char>
 	});
 }
 
-auto Characters(std::string expected) -> Parser<std::string>
-{
-	return [expected](std::span<std::string> actual) -> ParseResult<std::string>
-	{
-        if (actual.empty() || actual.front() != expected)
-        {
-            return std::nullopt;
-        }
-		return std::pair{ expected, actual.subspan(1) };
-	};
-}
-
-auto Digit() -> Parser<char>
-{
-	return Satisfy([](char actual)
-	{
-		return '0' <= actual && actual <= '9';
-	});
-}
-
-auto Number() -> Parser<Expression*>
+inline auto ParseTerm() -> Parser<Expression*>
 {
     return [](std::span<std::string> source) -> ParseResult<Expression*>
     {
-        if (source.empty() || source[0].empty())
+        if (source.empty() || source.front().empty())
         {
             return std::nullopt;
         }
 
-        for (auto c : source[0])
+        auto current = source.front();
+        auto pos = current.find_first_not_of("-0123456789");
+
+        std::string number_part;
+        std::optional<char> variable;
+
+        if (pos == std::string::npos)
         {
-            bool valid = '0' <= c && c <= '9';
-            if (!valid)
+            number_part = current;
+        }
+        else
+        {
+            number_part = current.substr(0, pos);
+            if (current.size() - pos != 1 || !std::isalpha(current[pos]))
             {
                 return std::nullopt;
             }
+            variable = current[pos];
         }
 
-        return std::pair{ new Literal{std::stoi(source[0])}, source.subspan(1)};
+        int number = 1;
+        if (number_part == "-")
+        {
+            number = -1;
+        }
+        else if (!number_part.empty())
+        {
+            number = std::stoi(number_part);
+        }
+
+        return std::pair{ new Term{number, variable}, source.subspan(1) };
     };
 }
 
-auto Boolean() -> Parser<Expression*>
+inline auto OneOf(std::initializer_list<char> chars)
+    -> Parser<char>
 {
-    return [](std::span<std::string> source) -> ParseResult<Expression*>
+    return [chars](std::span<std::string> source)
+        -> ParseResult<char>
     {
-        if (auto t = Characters("true")(source)) { return std::pair<Expression*, std::span<std::string>>{ new Literal{ true }, t->second}; }
-        if (auto f = Characters("false")(source)) { return std::pair<Expression*, std::span<std::string>>{ new Literal{ false }, f->second}; }
+        for (char c : chars)
+        {
+            if (auto r = Character(c)(source))
+            {
+                return std::pair{c, r->second};
+            }
+        }
+
         return std::nullopt;
     };
 }
 
-auto String() -> Parser<Expression*>
+template<typename SubParser>
+auto ParseLeftAssociative(
+    std::span<std::string> source,
+    SubParser sub,
+    std::initializer_list<char> ops)
+    -> ParseResult<Expression*>
+{
+    auto lhs = sub(source);
+    if (!lhs)
+    {
+        return std::nullopt;
+    }
+
+    auto expr = lhs->first;
+    auto rest = lhs->second;
+
+    while (auto op = OneOf(ops)(rest))
+    {
+        auto rhs = sub(op->second);
+        if (!rhs)
+        {
+            return std::nullopt;
+        }
+
+        expr = new Binary{op->first, expr, rhs->first};
+        rest = rhs->second;
+    }
+
+    return std::pair{expr, rest};
+}
+
+inline auto ParseMultiplicative() -> Parser<Expression*>
+{
+    return [](std::span<std::string> source)
+    {
+        return ParseLeftAssociative(
+            source,
+            ParseTerm(),
+            {'*', '/'}
+        );
+    };
+}
+
+inline auto ParseAdditive() -> Parser<Expression*>
+{
+    return [](std::span<std::string> source)
+    {
+        return ParseLeftAssociative(
+            source,
+            ParseMultiplicative(),
+            {'+', '-'}
+        );
+    };
+}
+
+inline auto ParseEquality() -> Parser<Expression*>
 {
     return [](std::span<std::string> source) -> ParseResult<Expression*>
     {
-        if (source.size() < 3 || source.front().empty())
+        auto lhs = ParseAdditive()(source);
+        if (!lhs)
         {
             return std::nullopt;
         }
 
-        // expect opening and closing quotes
-        if (source[0][0] != '"' || source[2][0] != '"')
+        if (auto c = Character('=')(lhs->second))
         {
+            if (auto rhs = ParseTerm()(c->second))
+            {
+                return std::pair{ new Equality{ lhs->first, rhs->first }, rhs->second };
+            }
             return std::nullopt;
         }
 
-        return std::pair{ new Literal(source[1]), source.subspan(1)};
+        return lhs;
     };
 }

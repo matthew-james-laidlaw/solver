@@ -9,7 +9,7 @@
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
-            "console": "internalConsole",
+            "console": "externalTerminal",
             "preLaunchTask": "CMake: build"
         }
     ]
