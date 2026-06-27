@@ -4,7 +4,7 @@
             "name": "Solver",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Debug/solver.exe",
+            "program": "${workspaceFolder}/build/tests/Debug/solver_tests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

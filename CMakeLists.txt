@@ -4,12 +4,15 @@ project(SOLVER LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(solver
-    src/main.cpp
-    src/Parser.cpp
+include(FetchContent)
+
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG        v1.17.0
 )
 
-target_include_directories(solver
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
+FetchContent_MakeAvailable(googletest)
+
+add_subdirectory(src)
+add_subdirectory(tests)
