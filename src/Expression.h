@@ -9,11 +9,11 @@ struct Expression
 
 struct Term : public Expression
 {
-	int number;
-	std::optional<char> variable;
+	int coefficient;
+	int exponent;
 
-	Term(int number, std::optional<char> variable)
-		: number(number), variable(variable)
+	Term(int coefficient, int exponent)
+		: coefficient(coefficient), exponent(exponent)
 	{}
 };
 

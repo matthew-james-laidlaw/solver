@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(solver
     src/main.cpp
+    src/Parser.cpp
 )
 
 target_include_directories(solver
