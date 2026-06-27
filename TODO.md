@@ -1,0 +1,4 @@
+- [ ] Implement polynomial solving for 1st and 2nd order polynomials
+- [ ] Clean up parser
+- [ ] Automate unit testing
+- [ ] Add fuzz testing
