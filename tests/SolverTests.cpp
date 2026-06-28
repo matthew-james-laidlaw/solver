@@ -8,48 +8,45 @@
 #include <string>
 #include <vector>
 
-namespace
+auto Serialize(Expression const* e, std::ostream& out) -> void
 {
-
-auto Serialize(Expression* e, std::ostream& out) -> void
-{
-    if (auto* term = dynamic_cast<Term*>(e))
+    if (auto* term = dynamic_cast<Term const*>(e))
     {
         out << "Term(";
-        if (term->coefficient == 1 && term->exponent == 0)
+        if (term->Coefficient() == 1 && term->Exponent() == 0)
             out << '1';
-        else if (term->coefficient == 1 && term->exponent == 1)
+        else if (term->Coefficient() == 1 && term->Exponent() == 1)
             out << 'x';
-        else if (term->exponent == 0)
-            out << term->coefficient;
-        else if (term->exponent == 1)
-            out << term->coefficient << 'x';
-        else if (term->coefficient == 1)
-            out << "x^" << term->exponent;
+        else if (term->Exponent() == 0)
+            out << term->Coefficient();
+        else if (term->Exponent() == 1)
+            out << term->Coefficient() << 'x';
+        else if (term->Coefficient() == 1)
+            out << "x^" << term->Exponent();
         else
-            out << term->coefficient << "x^" << term->exponent;
+            out << term->Coefficient() << "x^" << term->Exponent();
         out << ")";
     }
-    else if (auto* un = dynamic_cast<Unary*>(e))
+    else if (auto* un = dynamic_cast<Unary const*>(e))
     {
-        out << "Unary(" << un->op << ", ";
-        Serialize(un->operand, out);
+        out << "Unary(" << un->Op() << ", ";
+        Serialize(un->Operand(), out);
         out << ")";
     }
-    else if (auto* bin = dynamic_cast<Binary*>(e))
+    else if (auto* bin = dynamic_cast<Binary const*>(e))
     {
-        out << "Binary(" << bin->op << ", ";
-        Serialize(bin->lhs, out);
+        out << "Binary(" << bin->Op() << ", ";
+        Serialize(bin->Left(), out);
         out << ", ";
-        Serialize(bin->rhs, out);
+        Serialize(bin->Right(), out);
         out << ")";
     }
-    else if (auto* eq = dynamic_cast<Equality*>(e))
+    else if (auto* eq = dynamic_cast<Equality const*>(e))
     {
         out << "Equality(";
-        Serialize(eq->lhs, out);
+        Serialize(eq->Left(), out);
         out << ", ";
-        Serialize(eq->rhs, out);
+        Serialize(eq->Right(), out);
         out << ")";
     }
     else
@@ -58,7 +55,7 @@ auto Serialize(Expression* e, std::ostream& out) -> void
     }
 }
 
-auto Serialize(Expression* e) -> std::string
+auto Serialize(Expression const* e) -> std::string
 {
     std::ostringstream out;
     Serialize(e, out);
@@ -71,8 +68,6 @@ struct ParserCase
     std::string source;
     std::string expected;
 };
-
-} // namespace
 
 class ParserTest : public testing::TestWithParam<ParserCase> {};
 

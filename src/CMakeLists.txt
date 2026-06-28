@@ -1,4 +1,5 @@
 add_library(solver_lib
+    Expression.cpp
     Parser.cpp
 )
 

@@ -3,6 +3,7 @@
 #include <Parser.h>
 
 #include <functional>
+#include <optional>
 #include <span>
 #include <stdexcept>
 

@@ -1,49 +1,73 @@
 #pragma once
 
-#include <optional>
-
-struct Expression
+class Expression
 {
+public:
 	virtual ~Expression() = default;
 };
 
-struct Term : public Expression
+class Term : public Expression
 {
-	int coefficient;
-	int exponent;
+private:
 
-	Term(int coefficient, int exponent)
-		: coefficient(coefficient), exponent(exponent)
-	{}
+	int m_coefficient;
+	int m_exponent;
+
+public:
+
+	Term(int coefficient, int exponent);
+
+	auto Coefficient() const -> int;
+	auto Exponent() const -> int;
+
 };
 
-struct Unary : public Expression
+class Unary : public Expression
 {
-	char op;
-	Expression* operand;
+private:
 
-	Unary(char op, Expression* operand)
-		: op(op), operand(operand)
-	{}
+	char m_op;
+	Expression* m_operand;
+
+public:
+
+	Unary(char op, Expression* operand);
+
+	auto Op() const -> char;
+	auto Operand() const -> Expression const*;
+
 };
 
-struct Binary : public Expression
+class Binary : public Expression
 {
-	char op;
-	Expression* lhs;
-	Expression* rhs;
+private:
 
-	Binary(char op, Expression* lhs, Expression* rhs)
-		: op(op), lhs(lhs), rhs(rhs)
-	{}
+	char m_op;
+	Expression* m_lhs;
+	Expression* m_rhs;
+
+public:
+
+	Binary(char op, Expression* lhs, Expression* rhs);
+
+	auto Op() const -> char;
+	auto Left() const -> Expression const*;
+	auto Right() const -> Expression const*;
+
 };
 
-struct Equality : public Expression
+class Equality : public Expression
 {
-	Expression* lhs;
-	Expression* rhs;
+private:
 
-	Equality(Expression* lhs, Expression* rhs)
-		: lhs(lhs), rhs(rhs)
-	{}
+	Expression* m_lhs;
+	Expression* m_rhs;
+
+public:
+
+	Equality(Expression* lhs, Expression* rhs);
+
+	auto Left() const -> Expression const*;
+	auto Right() const -> Expression const*;
+
 };
