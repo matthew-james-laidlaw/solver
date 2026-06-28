@@ -36,7 +36,7 @@ auto Satisfy(Predicate pred) -> Parser<char>
 			return std::nullopt;
 		}
 
-		return InnerParseResult {
+		return InnerParseResult<char> {
             .result = source.front().front(),
             .rest = source.subspan(1),
         };
@@ -146,7 +146,7 @@ auto OneOf(std::initializer_list<char> chars) -> Parser<char>
         {
             if (auto r = Character(c)(source))
             {
-                return InnerParseResult {
+                return InnerParseResult<char> {
                     .result = c,
                     .rest = r->rest,
                 };
@@ -185,7 +185,7 @@ auto ParseLeftAssociative(
         rest = rhs->rest;
     }
 
-    return InnerParseResult {
+    return InnerParseResult<Expression*> {
         .result = expr,
         .rest = rest,
     };

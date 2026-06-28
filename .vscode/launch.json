@@ -1,16 +1,17 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
-            "name": "Solver",
-            "type": "cppvsdbg",
+            "name": "(MacOS) Debug Current Target",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/tests/Debug/solver_tests.exe",
+            "program": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
             "environment": [],
-            "console": "externalTerminal",
-            "preLaunchTask": "CMake: build"
-        }
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
     ]
 }
