@@ -69,9 +69,9 @@ auto Serialize(Expression* e) -> std::string
 
 struct ParserCase
 {
-    std::string              name;      // valid identifier for test output
-    std::vector<std::string> tokens;
-    std::string              expected;
+    std::string name;
+    std::string tokens;
+    std::string expected;
 };
 
 } // namespace
@@ -81,33 +81,31 @@ class ParserTest : public testing::TestWithParam<ParserCase> {};
 TEST_P(ParserTest, ParsesToExpected)
 {
     // Copy out of the param: State is a span over mutable strings.
-    std::vector<std::string> tokens = GetParam().tokens;
+    std::string tokens = GetParam().tokens;
 
-    auto result = ParseEquality()(std::span(tokens));
-
-    ASSERT_TRUE(result.has_value()) << "parser returned no result";
-    EXPECT_EQ(Serialize(result->result), GetParam().expected);
+    auto result = Parse(tokens);
+    EXPECT_EQ(Serialize(result), GetParam().expected);
 }
 
 INSTANTIATE_TEST_SUITE_P(
     Expressions,
     ParserTest,
     testing::Values(
-        ParserCase{ "Constant",           { "42" },                                       "Term(42)" },
-        ParserCase{ "NegativeConstant",   { "-42" },                                      "Term(-42)" },
-        ParserCase{ "NegativeCoeffVar",   { "-42x" },                                     "Term(-42x)" },
-        ParserCase{ "Addition",           { "1", "+", "2" },                              "Binary(+, Term(1), Term(2))" },
-        ParserCase{ "MulThenAdd",         { "3", "*", "2", "+", "1" },                    "Binary(+, Binary(*, Term(3), Term(2)), Term(1))" },
-        ParserCase{ "EqualityWithVar",    { "x", "+", "5", "=", "8" },                    "Equality(Binary(+, Term(x), Term(5)), Term(8))" },
-        ParserCase{ "LeftAssocAddition",  { "1", "+", "2", "+", "3" },                    "Binary(+, Binary(+, Term(1), Term(2)), Term(3))" },
-        ParserCase{ "CoeffVarPlusConst",  { "3x", "+", "5" },                             "Binary(+, Term(3x), Term(5))" },
-        ParserCase{ "NegBareVar",         { "-x" },                                       "Term(-1x)" },
-        ParserCase{ "NegCoeffVar",        { "-3x" },                                      "Term(-3x)" },
-        ParserCase{ "VarExpZero",         { "x^0" },                                      "Term(1)" },
-        ParserCase{ "VarExpOne",          { "x^1" },                                      "Term(x)" },
-        ParserCase{ "VarExpTwo",          { "x^2" },                                      "Term(x^2)" },
-        ParserCase{ "VarNegExp",          { "x^-3" },                                     "Term(x^-3)" },
-        ParserCase{ "Quadratic",          { "x^2", "+", "6x", "+", "5", "=", "0" },       "Equality(Binary(+, Binary(+, Term(x^2), Term(6x)), Term(5)), Term(0))" }
+        ParserCase{ "Constant",           "42",               "Term(42)" },
+        ParserCase{ "NegativeConstant",   "-42",              "Term(-42)" },
+        ParserCase{ "NegativeCoeffVar",   "-42x",             "Term(-42x)" },
+        ParserCase{ "Addition",           "1 + 2",            "Binary(+, Term(1), Term(2))" },
+        ParserCase{ "MulThenAdd",         "3 * 2 + 1",        "Binary(+, Binary(*, Term(3), Term(2)), Term(1))" },
+        ParserCase{ "EqualityWithVar",    "x + 5 = 8",        "Equality(Binary(+, Term(x), Term(5)), Term(8))" },
+        ParserCase{ "LeftAssocAddition",  "1 + 2 + 3",        "Binary(+, Binary(+, Term(1), Term(2)), Term(3))" },
+        ParserCase{ "CoeffVarPlusConst",  "3x + 5",           "Binary(+, Term(3x), Term(5))" },
+        ParserCase{ "NegBareVar",         "-x",               "Term(-1x)" },
+        ParserCase{ "NegCoeffVar",        "-3x",              "Term(-3x)" },
+        ParserCase{ "VarExpZero",         "x^0",              "Term(1)" },
+        ParserCase{ "VarExpOne",          "x^1",              "Term(x)" },
+        ParserCase{ "VarExpTwo",          "x^2",              "Term(x^2)" },
+        ParserCase{ "VarNegExp",          "x^-3",             "Term(x^-3)" },
+        ParserCase{ "Quadratic",          "x^2 + 6x + 5 = 0", "Equality(Binary(+, Binary(+, Term(x^2), Term(6x)), Term(5)), Term(0))" }
     ),
     [](const testing::TestParamInfo<ParserCase>& info)
     {
