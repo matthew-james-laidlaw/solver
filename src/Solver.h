@@ -2,9 +2,9 @@
 
 #include <Expression.h>
 
+#include <complex>
 #include <vector>
 
-/** @brief Solve for x in the given equality
- *  @returns All of the integer solutions for x.
- */
-auto Solve(Equality const& equation) -> std::vector<int>;
+using Solution = std::vector<std::complex<double>>;
+
+auto Solve(Equality const& equation) -> Solution;

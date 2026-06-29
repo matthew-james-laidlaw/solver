@@ -1,4 +1,5 @@
 add_executable(solver_tests
+    ParserTests.cpp
     SolverTests.cpp
 )
 
