@@ -10,14 +10,15 @@ class Term : public Expression
 {
 private:
 
-	int m_coefficient;
-	int m_exponent;
 
 public:
 
-	Term(int coefficient, int exponent);
+	double m_coefficient;
+	int    m_exponent;
 
-	auto Coefficient() const -> int;
+	Term(double coefficient, int exponent);
+
+	auto Coefficient() const -> double;
 	auto Exponent() const -> int;
 
 };

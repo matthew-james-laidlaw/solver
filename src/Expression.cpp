@@ -1,10 +1,10 @@
 #include <Expression.h>
 
-Term::Term(int coefficient, int exponent)
+Term::Term(double coefficient, int exponent)
     : m_coefficient(coefficient), m_exponent(exponent)
 {}
 
-auto Term::Coefficient() const -> int
+auto Term::Coefficient() const -> double
 {
     return m_coefficient;
 }
