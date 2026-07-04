@@ -10,8 +10,9 @@ struct Token
     enum class Type
     {
         Function, Equals,    // keywords
-        Plus, Minus, Carat,  // operators
+        Plus, Minus, Caret,  // operators
         Number, Variable,    // primaries
+        Nothing,
     };
 
     Type type;
