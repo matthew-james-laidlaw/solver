@@ -1,0 +1,30 @@
+#pragma once
+
+#include <token.h>
+
+#include <span>
+#include <vector>
+
+namespace parser
+{
+
+/** @brief A non-owning, cheaply-constructible collection of tokens to parse. Controls access to
+ *         the underlying tokens.
+ */
+class State
+{
+private:
+
+    std::span<Token> m_source;
+
+public:
+
+    State(std::span<Token> source);
+
+    auto Done() const -> bool;
+    auto Peek() const -> Token;
+    auto Advance() const -> State;
+
+};
+
+} // namespace parser
