@@ -1,6 +1,6 @@
 #include <state.h>
 
-namespace parser
+namespace solver
 {
 
 State::State(std::span<Token> source)
@@ -22,4 +22,4 @@ auto State::Advance() const -> State
     return m_source.subspan(1);
 }
 
-} // namespace parser
+} // namespace solver

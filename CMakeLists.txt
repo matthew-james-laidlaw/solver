@@ -17,6 +17,7 @@ FetchContent_MakeAvailable(googletest)
 
 add_library(combinator
     src/lexer.cpp
+    src/parser.cpp
     src/state.cpp
     src/token.cpp
 )
@@ -30,6 +31,7 @@ include(GoogleTest)
 add_executable(unit_tests
     tests/combinator_tests.cpp
     tests/lexer_tests.cpp
+    tests/parser_tests.cpp
 )
 
 target_link_libraries(unit_tests combinator gtest_main)

@@ -5,7 +5,7 @@
 #include <span>
 #include <vector>
 
-namespace parser
+namespace solver
 {
 
 /** @brief A non-owning, cheaply-constructible collection of tokens to parse. Controls access to
@@ -27,4 +27,4 @@ public:
 
 };
 
-} // namespace parser
+} // namespace solver

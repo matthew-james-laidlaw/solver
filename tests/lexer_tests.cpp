@@ -3,7 +3,7 @@
 #include <lexer.h>
 
 using namespace std::string_literals;
-using namespace parser;
+using namespace solver;
 
 TEST(LexerTests, lex_function)
 {

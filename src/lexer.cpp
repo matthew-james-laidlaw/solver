@@ -4,7 +4,7 @@
 
 using namespace std::string_literals;
 
-namespace parser
+namespace solver
 {
 
 auto Lex(std::string const& source) -> std::vector<Token>
@@ -97,4 +97,4 @@ auto Lex(std::string const& source) -> std::vector<Token>
     return tokens;
 }
 
-} // namespace parser
+} // namespace solver

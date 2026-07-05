@@ -4,7 +4,7 @@
 
 #include <functional>
 
-namespace parser
+namespace solver
 {
     
 /** @brief Any callable that returns a @ref Result given an input @ref State. The combinator
@@ -31,6 +31,32 @@ auto Satisfy(std::function<bool(Token::Type)> predicate) -> Parser<Token>
         }
 
         return Result<Token>::Success(state.Peek(), state.Advance());
+    };
+}
+
+/** @brief Parser that attempts each of the given sub-parsers in order. Expecting all of them to
+ *         succeed.
+ */
+template <typename T>
+auto Sequence(std::vector<Parser<T>> const& parsers) -> Parser<std::vector<T>>
+{
+    return [=](State state) -> Result<std::vector<T>>
+    {
+        auto original_state = state;
+        auto results = std::vector<T>{};
+
+        for (auto const& parser : parsers)
+        {
+            auto result = parser(state);
+            if (!result.Succeeded())
+            {
+                return Result<std::vector<T>>::Failure(original_state, "parser failure (sequence)");
+            }
+            results.push_back(result.Value());
+            state = result.Rest();
+        }
+
+        return Result<std::vector<T>>::Success(results, state);
     };
 }
 
@@ -130,4 +156,4 @@ auto Map(Parser<T1> in, std::function<T2(T1)> out) -> Parser<T2>
     };
 }
 
-} // namespace parser
+} // namespace solver

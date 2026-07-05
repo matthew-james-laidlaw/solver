@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-namespace parser
+namespace solver
 {
 
 /** @brief The outcome of running a parser. On success, holds a value and the remaining state. On
@@ -64,4 +64,4 @@ public:
 
 };
 
-} // namespace parser
+} // namespace solver

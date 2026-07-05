@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-namespace parser
+namespace solver
 {
 
 auto Lex(std::string const& source) -> std::vector<Token>;
 
-} // namespace parser
+} // namespace solver

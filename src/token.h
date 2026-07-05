@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace parser
+namespace solver
 {
 
 struct Token
@@ -21,4 +21,4 @@ struct Token
 
 auto operator==(Token const& lhs, Token const& rhs) -> bool;
 
-} // namespace parser
+} // namespace solver
