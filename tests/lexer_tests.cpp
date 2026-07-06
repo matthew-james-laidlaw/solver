@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <lexer.h>
+#include <parser/lexer.h>
 
 using namespace std::string_literals;
 using namespace solver;

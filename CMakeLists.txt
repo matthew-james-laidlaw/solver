@@ -15,13 +15,13 @@ FetchContent_MakeAvailable(googletest)
 
 # --- Libraries ---
 
-add_library(combinator
-    src/lexer.cpp
-    src/parser.cpp
-    src/state.cpp
-    src/token.cpp
+add_library(parser
+    src/parser/lexer.cpp
+    src/parser/state.cpp
+    src/parser/token.cpp
+    src/parser/expression.cpp
 )
-target_include_directories(combinator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # --- Testing ---
 
@@ -34,5 +34,5 @@ add_executable(unit_tests
     tests/parser_tests.cpp
 )
 
-target_link_libraries(unit_tests combinator gtest_main)
+target_link_libraries(unit_tests parser gtest_main)
 gtest_discover_tests(unit_tests)

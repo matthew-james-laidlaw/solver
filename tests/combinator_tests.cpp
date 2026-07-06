@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <combinator.h>
+#include <parser/combinator.h>
 
 using namespace solver;
 
@@ -433,7 +433,7 @@ TEST(CombinatorTests, map_succeeds)
         return type == Token::Type::Number;
     });
 
-    auto result = Map<Token, int>(parser, [](Token token) -> int
+    auto result = Map(parser, [](Token token) -> int
     {
         return std::stoi(token.lexeme);
     })(state);
@@ -457,7 +457,7 @@ TEST(CombinatorTests, map_fails)
         return type == Token::Type::Plus;
     });
 
-    auto result = Map<Token, int>(parser, [](Token token) -> int
+    auto result = Map(parser, [](Token token) -> int
     {
         return std::stoi(token.lexeme);
     })(state);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <token.h>
+#include <parser/token.h>
 
 #include <span>
 #include <vector>
@@ -15,11 +15,11 @@ class State
 {
 private:
 
-    std::span<Token> m_source;
+    std::span<const Token> m_source;
 
 public:
 
-    State(std::span<Token> source);
+    State(std::span<const Token> source);
 
     auto Done() const -> bool;
     auto Peek() const -> Token;

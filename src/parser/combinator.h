@@ -1,6 +1,6 @@
 #pragma once
 
-#include <result.h>
+#include <parser/result.h>
 
 #include <functional>
 
@@ -16,7 +16,7 @@ using Parser = std::function<Result<T>(State)>;
 /** @brief Parser that attempts the given predicate on the next element in the state. Advances the
  *         state on success, otherwise returns an error message.
  */
-auto Satisfy(std::function<bool(Token::Type)> predicate) -> Parser<Token>
+inline auto Satisfy(std::function<bool(Token::Type)> predicate) -> Parser<Token>
 {
     return [=](State state) -> Result<Token>
     {
@@ -142,17 +142,45 @@ auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
     };
 }
 
-template <typename T1, typename T2>
-auto Map(Parser<T1> in, std::function<T2(T1)> out) -> Parser<T2>
+template <typename T, typename F>
+auto Map(Parser<T> parser, F mapper) -> Parser<std::invoke_result_t<F, T const&>>
 {
-    return [=](State state) -> Result<T2>
+    using U = std::invoke_result_t<F, T const&>;
+    return [=](State state) -> Result<U>
     {
-        auto result = in(state);
-        if (!result.Succeeded())
+        auto r = parser(state);
+        if (!r.Succeeded())
         {
-            return Result<T2>::Failure(state, "parser failure (map)");
+            return Result<U>::Failure(state, "parser failure (map)");
         }
-        return Result<T2>::Success(out(result.Value()), result.Rest());
+        return Result<U>::Success(mapper(r.Value()), r.Rest());
+    };
+}
+
+/** @brief Parser that runs two sub-parsers in sequence, passes the state from the first into the
+ *         second, then folds both values into one result with the given callable. Restores the
+ *         original state on failure.
+ */
+template <typename T1, typename T2, typename F>
+auto Combine(Parser<T1> a, Parser<T2> b, F combiner) -> Parser<std::invoke_result_t<F, T1, T2>>
+{
+    using R = std::invoke_result_t<F, T1, T2>;
+
+    return [=](State state) -> Result<R>
+    {
+        auto result_a = a(state);
+        if (!result_a.Succeeded())
+        {
+            return Result<R>::Failure(state, "parser failure (combine)");
+        }
+
+        auto result_b = b(result_a.Rest());
+        if (!result_b.Succeeded())
+        {
+            return Result<R>::Failure(state, "parser failure (combine)");
+        }
+
+        return Result<R>::Success(combiner(result_a.Value(), result_b.Value()), result_b.Rest());
     };
 }
 

@@ -1,9 +1,9 @@
-#include <state.h>
+#include <parser/state.h>
 
 namespace solver
 {
 
-State::State(std::span<Token> source)
+State::State(std::span<const Token> source)
     : m_source(source)
 {}
 
