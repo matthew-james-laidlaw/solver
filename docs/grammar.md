@@ -1,19 +1,18 @@
 ### Grammar Rules
 
 ```
-equation   ::= "f(x)" "=" expression
+equation ::= "f(x)" "=" expression
 expression ::= unary { ( "+" | "-" ) unary }
-unary      ::= [ "-" ] term
-term       ::= posint [ variable ] | variable
-variable   ::= "x" [ "^" posint ]
+unary ::= [ "-" ] term
+term ::= number [ power ] | power
+power ::= variable [ "^" number ]
 ```
 
 ### Lexographical Rules
 
 ```
-posint  ::= nonzero { digit }
-nonzero ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
-digit   ::= "0" | nonzero
+number ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+variable ::= "x"
 ```
 
 ### Key

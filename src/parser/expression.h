@@ -45,12 +45,10 @@ public:
 
 class Monomial : public Expression
 {
-private:
+public:
 
     int m_coefficient;
     int m_exponent;
-
-public:
 
     Monomial(int coefficient, int exponent);
 

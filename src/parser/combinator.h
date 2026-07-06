@@ -16,7 +16,8 @@ using Parser = std::function<Result<T>(State)>;
 /** @brief Parser that attempts the given predicate on the next element in the state. Advances the
  *         state on success, otherwise returns an error message.
  */
-inline auto Satisfy(std::function<bool(Token::Type)> predicate) -> Parser<Token>
+template <typename Predicate>
+auto Satisfy(Predicate predicate) -> Parser<Token>
 {
     return [=](State state) -> Result<Token>
     {
@@ -38,7 +39,7 @@ inline auto Satisfy(std::function<bool(Token::Type)> predicate) -> Parser<Token>
  *         succeed.
  */
 template <typename T>
-auto Sequence(std::vector<Parser<T>> const& parsers) -> Parser<std::vector<T>>
+auto Sequence(std::vector<Parser<T>> parsers) -> Parser<std::vector<T>>
 {
     return [=](State state) -> Result<std::vector<T>>
     {
@@ -182,6 +183,18 @@ auto Combine(Parser<T1> a, Parser<T2> b, F combiner) -> Parser<std::invoke_resul
 
         return Result<R>::Success(combiner(result_a.Value(), result_b.Value()), result_b.Rest());
     };
+}
+
+template <typename A, typename B>
+auto SkipThen(Parser<A> a, Parser<B> b) -> Parser<B>
+{
+    return Combine(a, b, [](A const&, B b) { return b; });
+}
+
+template <typename A, typename B, typename... Rest>
+auto SkipThen(Parser<A> a, Parser<B> b, Rest... rest)
+{
+    return SkipThen(SkipThen(a, b), rest...);
 }
 
 } // namespace solver
