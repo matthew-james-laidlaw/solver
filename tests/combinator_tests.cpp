@@ -353,7 +353,7 @@ TEST(CombinatorTests, map_succeeds)
         return type == Token::Type::Number;
     });
 
-    auto result = parser.map([](Token token) -> int
+    auto result = parser.Map([](Token token) -> int
     {
         return std::stoi(token.lexeme);
     })(state);
@@ -377,7 +377,7 @@ TEST(CombinatorTests, map_fails)
         return type == Token::Type::Plus;
     });
 
-    auto result = parser.map([](Token token) -> int
+    auto result = parser.Map([](Token token) -> int
     {
         return std::stoi(token.lexeme);
     })(state);

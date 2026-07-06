@@ -50,10 +50,18 @@ public:
     int m_coefficient;
     int m_exponent;
 
+    static auto Constant(int coefficient) -> Monomial;
+    static auto Variable(int exponent = 1) -> Monomial;
+
     Monomial(int coefficient, int exponent);
 
     auto Coefficient() const -> int;
     auto Exponent() const -> int;
+
+    auto operator-() -> Monomial
+    {
+        return Monomial(-m_coefficient, m_exponent);
+    }
 
 };
 

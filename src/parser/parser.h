@@ -15,6 +15,9 @@ auto Variable = Satisfy([](Token::Type t)
 auto Number = Satisfy([](Token::Type t)
 {
     return t == Token::Type::Number;
+}).Map([](Token const& token)
+{
+    return std::stoi(token.lexeme);
 });
 
 auto Caret = Satisfy([](Token::Type t)
@@ -42,61 +45,55 @@ auto Equals = Satisfy([](Token::Type t)
     return t == Token::Type::Equals;
 });
 
-auto ToInt = [](Token const& t)
-{
-    return std::stoi(t.lexeme);
-};
+/** @brief Parses the grammar rule:
+ * 
+ *         power ::= variable [ "^" number ]
+ *
+ *         If a variable is present without an exponent, we return the monomial x^1. If
+ *         an exponent is present, we return x^n.
+ */
+auto PowerParser =
+    (Variable >> Maybe(Caret >> Number))
+    .Map([](std::optional<int> exponent) -> Monomial
+    {
+        return Monomial::Variable(exponent.value_or(1));
+    });
 
-auto power =
-    Combine(
-        Variable,
-        Maybe(Caret >> Number.map(ToInt)),
-        [](Token const&, std::optional<int> exp)
-        {
-            return Monomial{1, exp.value_or(1)};
-        }
-    );
+/** @brief Parses the grammar rule:
+ * 
+ *         term ::= number [ power ] | power
+ * 
+ *         If a coefficient is present without a power, we return the monomial cx^0. If
+ *         both are present, we return cx^n. If no coefficient is present we return x^n.
+ */
+auto TermParser =
+    (Number & Maybe(PowerParser))
+    .Map([](auto&& args) -> Monomial
+    {
+        auto& [coefficient, power] = args;
+        return power ? Monomial(coefficient, power->Exponent()) : Monomial::Constant(coefficient);
+    })
+    | PowerParser;
 
-auto term =
-        Combine(
-            Number.map(ToInt),
-            Maybe(power),
-            [](int coefficient, std::optional<Monomial> power)
-            {
-                if (power)
-                {
-                    return Monomial(coefficient, power->Exponent());
-                }
-                else
-                {
-                    return Monomial(coefficient, 0);
-                }
-            }
-        ) | power;
-
-auto unary = 
-    Combine(
-        Maybe(Minus),
-        term,
-        [](std::optional<Token> minus, Monomial m)
-        {
-            if (minus)
-            {
-                return Monomial(-m.Coefficient(), m.Exponent());
-            }
-            else
-            {
-                return m;
-            }
-        }
-    );
-
-// auto binary_term = ((Plus | Minus) & unary)
+/** @brief Parses the grammar rule:
+ * 
+ *         unary ::= [ "-" ] term
+ * 
+ *         If a minus is present we negate whatever is parsed from 'term'. Otherwise, we
+ *         simply pass through the parsed term.
+ */
+auto UnaryParser =
+    (Maybe(Minus) & TermParser)
+    .Map([](auto&& args) -> Monomial
+    {
+        auto& [minus, term] = args;
+        return minus ? -term : term;
+    });
 
 auto binary_term =
     Combine(
         Plus | Minus,
-        unary,
+        UnaryParser,
         [](Token op, Monomial term)
         {
             if (op.type == Token::Type::Minus)
@@ -108,9 +105,9 @@ auto binary_term =
         }
     );
 
-auto expression =
+auto ExpressionParser =
     Combine(
-        unary,
+        UnaryParser,
         ZeroOrMore(binary_term),
         [](Monomial first, std::vector<Monomial> rest)
         {
@@ -119,7 +116,7 @@ auto expression =
         }
     );
 
-auto equation = Sequence<Token>({Function, Equals}) >> expression;
+auto equation = Sequence<Token>({Function, Equals}) >> ExpressionParser;
 
 inline auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
 {

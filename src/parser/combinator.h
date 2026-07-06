@@ -33,14 +33,16 @@ public:
     }
 
     template <typename F>
-    auto map(F mapper) const
+    auto Map(F mapper) const
     {
         using U = std::invoke_result_t<F, T const&>;
 
+        auto fn = m_fn;
+
         return Parser<U>(
-            [=, this](State state)
+            [mapper, fn](State state)
             {
-                auto r = (*this)(state);
+                auto r = fn(state);
 
                 if (!r.Succeeded())
                 {

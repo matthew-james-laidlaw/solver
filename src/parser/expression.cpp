@@ -38,6 +38,16 @@ Monomial::Monomial(int coefficient, int exponent)
     , m_exponent(exponent)
 {}
 
+auto Monomial::Constant(int coefficient) -> Monomial
+{
+    return Monomial{ coefficient, 0 };
+}
+
+auto Monomial::Variable(int exponent) -> Monomial
+{
+    return Monomial{ 1, exponent };
+}
+
 auto Monomial::Coefficient() const -> int
 {
     return m_coefficient;

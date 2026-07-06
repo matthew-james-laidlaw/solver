@@ -14,7 +14,7 @@ TEST(ParserTests, parse_power_no_exponent)
 
     State state(source);
 
-    auto result = power(state);
+    auto result = PowerParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -37,7 +37,7 @@ TEST(ParserTests, parse_power_with_exponent)
 
     State state(source);
 
-    auto result = power(state);
+    auto result = PowerParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -58,7 +58,7 @@ TEST(ParserTests, parse_term_constant)
 
     State state(source);
 
-    auto result = term(state);
+    auto result = TermParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -79,7 +79,7 @@ TEST(ParserTests, parse_term_variable)
 
     State state(source);
 
-    auto result = term(state);
+    auto result = TermParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -103,7 +103,7 @@ TEST(ParserTests, parse_term_monomial)
 
     State state(source);
 
-    auto result = term(state);
+    auto result = TermParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -127,7 +127,7 @@ TEST(ParserTests, parse_unary_positive)
 
     State state(source);
 
-    auto result = unary(state);
+    auto result = UnaryParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -152,7 +152,7 @@ TEST(ParserTests, parse_unary_negative)
 
     State state(source);
 
-    auto result = unary(state);
+    auto result = UnaryParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -176,7 +176,7 @@ TEST(ParserTests, parse_expression_term)
 
     State state(source);
 
-    auto result = expression(state);
+    auto result = ExpressionParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -206,7 +206,7 @@ TEST(ParserTests, parse_expression_plus)
 
     State state(source);
 
-    auto result = expression(state);
+    auto result = ExpressionParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -238,7 +238,7 @@ TEST(ParserTests, parse_expression_minus)
 
     State state(source);
 
-    auto result = expression(state);
+    auto result = ExpressionParser(state);
 
     ASSERT_TRUE(result.Succeeded());
 
