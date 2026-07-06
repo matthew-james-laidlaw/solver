@@ -13,6 +13,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+# --- Compiler Options ---
+if(WIN32)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif()
+
 # --- Libraries ---
 
 add_library(parser

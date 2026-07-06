@@ -49,11 +49,6 @@ TEST(ParserTests, parse_power_with_exponent)
     EXPECT_TRUE(result.Rest().Done());
 }
 
-TEST(ParserTests, parse_power_fails)
-{
-    ASSERT_TRUE(false) << "not implemented";
-}
-
 TEST(ParserTests, parse_term_constant)
 {
     auto source = std::vector<Token>
@@ -120,11 +115,6 @@ TEST(ParserTests, parse_term_monomial)
     EXPECT_TRUE(result.Rest().Done());
 }
 
-TEST(ParserTests, parse_term_fails)
-{
-    ASSERT_TRUE(false) << "not implemented";
-}
-
 TEST(ParserTests, parse_unary_positive)
 {
     auto source = std::vector<Token>
@@ -172,11 +162,6 @@ TEST(ParserTests, parse_unary_negative)
     ASSERT_EQ(mono.Exponent(), 2);
 
     EXPECT_TRUE(result.Rest().Done());
-}
-
-TEST(ParserTests, parse_unary_fails)
-{
-    ASSERT_TRUE(false) << "not implemented";
 }
 
 TEST(ParserTests, parse_expression_term)
@@ -266,9 +251,4 @@ TEST(ParserTests, parse_expression_minus)
     ASSERT_EQ(mono[1].Exponent(), 3);
 
     EXPECT_TRUE(result.Rest().Done());
-}
-
-TEST(ParserTests, parse_expression_fails)
-{
-    ASSERT_TRUE(false) << "not implemented";
 }

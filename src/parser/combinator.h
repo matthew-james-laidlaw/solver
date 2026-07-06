@@ -100,33 +100,6 @@ auto ZeroOrMore(Parser<T> parser) -> Parser<std::vector<T>>
     };
 }
 
-/** @brief Parser that attempts the given sub-parser indefinitely until it fails. Requires at least
- *         one match
- */
-template <typename T>
-auto OneOrMore(Parser<T> parser) -> Parser<std::vector<T>>
-{
-    return [=](State state) -> Result<std::vector<T>>
-    {
-        std::vector<T> values;
-
-        auto first_result = parser(state);
-        if (!first_result.Succeeded())
-        {
-            return Result<std::vector<T>>::Failure(state, "parser failure (one-or-more)");
-        }
-        values.push_back(first_result.Value());
-        state = first_result.Rest();
-
-        for (auto result = parser(state); result.Succeeded(); state = result.Rest(), result = parser(state))
-        {
-            values.push_back(result.Value());
-        }
-
-        return Result<std::vector<T>>::Success(values, state);
-    };
-}
-
 /** @brief Parser that attempts the given sub-parser once. Allowing for no match.
  */
 template <typename T>
@@ -189,12 +162,6 @@ template <typename A, typename B>
 auto SkipThen(Parser<A> a, Parser<B> b) -> Parser<B>
 {
     return Combine(a, b, [](A const&, B b) { return b; });
-}
-
-template <typename A, typename B, typename... Rest>
-auto SkipThen(Parser<A> a, Parser<B> b, Rest... rest)
-{
-    return SkipThen(SkipThen(a, b), rest...);
 }
 
 } // namespace solver
