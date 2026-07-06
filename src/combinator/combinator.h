@@ -1,6 +1,6 @@
 #pragma once
 
-#include <parser/result.h>
+#include <frontend/result.h>
 
 #include <functional>
 
@@ -10,9 +10,6 @@ namespace solver
 /** @brief Any callable that returns a @ref Result given an input @ref State. The combinator
  *         system composes parsers responsible for portions of a grammar to parse the full grammar.
  */
-// template <typename T>
-// using Parser = std::function<Result<T>(State)>;
-
 template <typename T>
 class Parser
 {
@@ -79,32 +76,6 @@ auto Satisfy(Predicate predicate) -> Parser<Token>
     });
 }
 
-/** @brief Parser that attempts each of the given sub-parsers in order. Expecting all of them to
- *         succeed.
- */
-template <typename T>
-auto Sequence(std::vector<Parser<T>> parsers) -> Parser<std::vector<T>>
-{
-    return Parser<std::vector<T>>([=](State state) -> Result<std::vector<T>>
-    {
-        auto original_state = state;
-        auto results = std::vector<T>{};
-
-        for (auto const& parser : parsers)
-        {
-            auto result = parser(state);
-            if (!result.Succeeded())
-            {
-                return Result<std::vector<T>>::Failure(original_state, "parser failure (sequence)");
-            }
-            results.push_back(result.Value());
-            state = result.Rest();
-        }
-
-        return Result<std::vector<T>>::Success(results, state);
-    });
-}
-
 /** @brief Parser that attempts the given sub-parser indefinitely until it fails. Allows for no
  *         matches.
  */
@@ -140,37 +111,14 @@ auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
     });
 }
 
-/** @brief Parser that runs two sub-parsers in sequence, passes the state from the first into the
- *         second, then folds both values into one result with the given callable. Restores the
- *         original state on failure.
- */
-template <typename T1, typename T2, typename F>
-auto Combine(Parser<T1> a, Parser<T2> b, F combiner) -> Parser<std::invoke_result_t<F, T1, T2>>
-{
-    using R = std::invoke_result_t<F, T1, T2>;
-
-    return Parser<R>([=](State state) -> Result<R>
-    {
-        auto result_a = a(state);
-        if (!result_a.Succeeded())
-        {
-            return Result<R>::Failure(state, "parser failure (combine)");
-        }
-
-        auto result_b = b(result_a.Rest());
-        if (!result_b.Succeeded())
-        {
-            return Result<R>::Failure(state, "parser failure (combine)");
-        }
-
-        return Result<R>::Success(combiner(result_a.Value(), result_b.Value()), result_b.Rest());
-    });
-}
-
 template <typename A, typename B>
 auto operator>>(Parser<A> a, Parser<B> b) -> Parser<B>
 {
-    return Combine(a, b, [](A const&, B b) { return b; });
+    return (a & b).Map([](auto&& args)
+    {
+        auto& [_, rhs] = args;
+        return rhs;
+    });
 }
 
 /** @brief Parser that attempts each of the given sub-parsers until one of them passes. Fails if
@@ -193,6 +141,9 @@ auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
     });
 }
 
+/** @brief Parser that runs two sub-parsers in sequence, passes the state from the first
+ *         into the second, then folds both results into a tuple.
+ */
 template <typename A, typename B>
 auto operator&(Parser<A> a, Parser<B> b) -> Parser<std::tuple<A, B>>
 {

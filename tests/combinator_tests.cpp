@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <parser/combinator.h>
+#include <combinator/combinator.h>
 
 using namespace solver;
 
@@ -76,96 +76,6 @@ TEST(CombinatorTests, satisfy_predicate_advances_state)
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value(), source[0]);
     ASSERT_EQ(result.Rest().Peek(), source[1]);
-}
-
-TEST(CombinatorTests, sequence_matches_one_parser)
-{
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Function, .lexeme = "f(x)" },
-    };
-
-    auto state = State(source);
-
-    auto parsers = std::vector<Parser<Token>>
-    {
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; }),
-    };
-
-    auto result = Sequence(parsers)(state);
-
-    ASSERT_TRUE(result.Succeeded());
-    ASSERT_EQ(result.Value(), source);
-    ASSERT_TRUE(result.Rest().Done());
-}
-
-TEST(CombinatorTests, sequence_matches_multiple_parsers)
-{
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Function, .lexeme = "f(x)" },
-        { .type = Token::Type::Equals, .lexeme = "=" },
-    };
-
-    auto state = State(source);
-
-    auto parsers = std::vector<Parser<Token>>
-    {
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; }),
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Equals; }),
-    };
-
-    auto result = Sequence(parsers)(state);
-
-    ASSERT_TRUE(result.Succeeded());
-    ASSERT_EQ(result.Value(), source);
-    ASSERT_TRUE(result.Rest().Done());
-}
-
-TEST(CombinatorTests, sequence_fails_first_parser)
-{
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Function, .lexeme = "f(x)" },
-    };
-
-    auto state = State(source);
-
-    auto parsers = std::vector<Parser<Token>>
-    {
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; }),
-    };
-
-    auto result = Sequence(parsers)(state);
-
-    ASSERT_FALSE(result.Succeeded());
-    ASSERT_EQ(result.Message(), "parser failure (sequence)");
-    ASSERT_EQ(result.Rest().Peek(), source[0]);
-}
-
-TEST(CombinatorTests, sequence_fails_middle_parser)
-{
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Function, .lexeme = "f(x)" },
-        { .type = Token::Type::Equals, .lexeme = "=" },
-        { .type = Token::Type::Number, .lexeme = "5" },
-    };
-
-    auto state = State(source);
-
-    auto parsers = std::vector<Parser<Token>>
-    {
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; }),
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; }),
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Number; }),
-    };
-
-    auto result = Sequence(parsers)(state);
-
-    ASSERT_FALSE(result.Succeeded());
-    ASSERT_EQ(result.Message(), "parser failure (sequence)");
-    ASSERT_EQ(result.Rest().Peek(), source[0]);
 }
 
 TEST(CombinatorTests, choice_matches_first_parser)

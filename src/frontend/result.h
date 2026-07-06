@@ -1,6 +1,6 @@
 #pragma once
 
-#include <parser/state.h>
+#include <frontend/state.h>
 
 #include <optional>
 #include <string>

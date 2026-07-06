@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <parser/parser.h>
-#include <parser/token.h>
+#include <frontend/parser.h>
+#include <frontend/token.h>
 
 using namespace solver;
 

@@ -23,10 +23,10 @@ endif()
 # --- Libraries ---
 
 add_library(parser
-    src/parser/lexer.cpp
-    src/parser/state.cpp
-    src/parser/token.cpp
-    src/parser/expression.cpp
+    src/backend/expression.cpp
+    src/frontend/lexer.cpp
+    src/frontend/state.cpp
+    src/frontend/token.cpp
 )
 target_include_directories(parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 

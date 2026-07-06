@@ -1,4 +1,4 @@
-#include <parser/token.h>
+#include <frontend/token.h>
 
 namespace solver
 {

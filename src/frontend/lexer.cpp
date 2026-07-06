@@ -1,4 +1,4 @@
-#include <parser/lexer.h>
+#include <frontend/lexer.h>
 
 #include <stdexcept>
 

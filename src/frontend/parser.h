@@ -1,8 +1,8 @@
 #pragma once
 
-#include <parser/combinator.h>
-#include <parser/expression.h>
-#include <parser/token.h>
+#include <backend/expression.h>
+#include <combinator/combinator.h>
+#include <frontend/token.h>
 
 namespace solver
 {
