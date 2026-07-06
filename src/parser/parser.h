@@ -90,33 +90,50 @@ auto UnaryParser =
         return minus ? -term : term;
     });
 
-auto binary_term =
-    Combine(
-        Plus | Minus,
-        UnaryParser,
-        [](Token op, Monomial term)
-        {
-            if (op.type == Token::Type::Minus)
-            {
-                term = Monomial(-term.Coefficient(), term.Exponent());
-            }
+/** @brief Parses the (pseudo) grammar rule:
+ * 
+ *         ( "+" | "-" ) unary
+ * 
+ *         Given a '+', simply passes through the parsed monomial. Given a '-', negates
+ *         the parsed monomial.
+ * 
+ *         This rule does not exist in the grammar but is a subset of the expression
+ *         parsing rule:
+ * 
+ *         expression ::= unary { ( "+" | "-" ) unary }
+ */
+auto BinaryParser =
+    ((Plus | Minus) & UnaryParser)
+    .Map([](auto&& args) -> Monomial
+    {
+        auto& [ op, monomial ] = args;
+        return op.type == Token::Type::Minus ? -monomial : monomial;
+    });
 
-            return term;
-        }
-    );
-
+/** @brief Parses the grammar rule:
+ * 
+ *         expression ::= unary { ( "+" | "-" ) unary }
+ * 
+ *         Parses at least one monomial and right folds chained arithmetic operators,
+ *         combining individual monomials into a collection of them.
+ */
 auto ExpressionParser =
-    Combine(
-        UnaryParser,
-        ZeroOrMore(binary_term),
-        [](Monomial first, std::vector<Monomial> rest)
-        {
-            rest.insert(rest.begin(), first);
-            return rest;
-        }
-    );
+    (UnaryParser & ZeroOrMore(BinaryParser))
+    .Map([](auto&& args) -> std::vector<Monomial>
+    {
+        auto [first, rest] = args;
+        rest.insert(rest.begin(), first);
+        return rest;
+    });
 
-auto equation = Sequence<Token>({Function, Equals}) >> ExpressionParser;
+/** @brief Parses the grammar rule:
+ *
+ *         equation ::= "f(x)" "=" expression
+ * 
+ *         Checks for the presence of a leading "f(x) = ..." and returns the parsed
+ *         expression.
+ */
+auto EquationParser = Function >> Equals >> ExpressionParser;
 
 inline auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
 {
@@ -148,7 +165,7 @@ inline auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomia
 inline auto Parse(std::vector<Token> const& source) -> std::vector<Monomial>
 {
     std::span<const Token> state(source);
-    auto result = equation(state);
+    auto result = EquationParser(state);
     if (!result.Succeeded())
     {
         return {};
