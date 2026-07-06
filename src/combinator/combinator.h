@@ -1,12 +1,17 @@
 #pragma once
 
 #include <frontend/result.h>
+#include <frontend/state.h>
 
 #include <functional>
+#include <optional>
+#include <tuple>
+#include <type_traits>
+#include <vector>
 
 namespace solver
 {
-    
+
 /** @brief Any callable that returns a @ref Result given an input @ref State. The combinator
  *         system composes parsers responsible for portions of a grammar to parse the full grammar.
  */

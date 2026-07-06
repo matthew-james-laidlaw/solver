@@ -1,18 +1,22 @@
 #pragma once
 
-#include <backend/expression.h>
+#include <backend/monomial.h>
 #include <combinator/combinator.h>
 #include <frontend/token.h>
+
+#include <algorithm>
+#include <span>
+#include <vector>
 
 namespace solver
 {
 
-auto Variable = Satisfy([](Token::Type t)
+inline auto Variable = Satisfy([](Token::Type t)
 {
     return t == Token::Type::Variable;
 });
 
-auto Number = Satisfy([](Token::Type t)
+inline auto Number = Satisfy([](Token::Type t)
 {
     return t == Token::Type::Number;
 }).Map([](Token const& token)
@@ -20,27 +24,27 @@ auto Number = Satisfy([](Token::Type t)
     return std::stoi(token.lexeme);
 });
 
-auto Caret = Satisfy([](Token::Type t)
+inline auto Caret = Satisfy([](Token::Type t)
 {
     return t == Token::Type::Caret;
 });
 
-auto Plus = Satisfy([](Token::Type t)
+inline auto Plus = Satisfy([](Token::Type t)
 {
     return t == Token::Type::Plus;
 });
 
-auto Minus = Satisfy([](Token::Type t)
+inline auto Minus = Satisfy([](Token::Type t)
 {
     return t == Token::Type::Minus;
 });
 
-auto Function = Satisfy([](Token::Type t)
+inline auto Function = Satisfy([](Token::Type t)
 {
     return t == Token::Type::Function;
 });
 
-auto Equals = Satisfy([](Token::Type t)
+inline auto Equals = Satisfy([](Token::Type t)
 {
     return t == Token::Type::Equals;
 });
@@ -52,7 +56,7 @@ auto Equals = Satisfy([](Token::Type t)
  *         If a variable is present without an exponent, we return the monomial x^1. If
  *         an exponent is present, we return x^n.
  */
-auto PowerParser =
+inline auto PowerParser =
     (Variable >> Maybe(Caret >> Number))
     .Map([](std::optional<int> exponent) -> Monomial
     {
@@ -66,7 +70,7 @@ auto PowerParser =
  *         If a coefficient is present without a power, we return the monomial cx^0. If
  *         both are present, we return cx^n. If no coefficient is present we return x^n.
  */
-auto TermParser =
+inline auto TermParser =
     (Number & Maybe(PowerParser))
     .Map([](auto&& args) -> Monomial
     {
@@ -82,7 +86,7 @@ auto TermParser =
  *         If a minus is present we negate whatever is parsed from 'term'. Otherwise, we
  *         simply pass through the parsed term.
  */
-auto UnaryParser =
+inline auto UnaryParser =
     (Maybe(Minus) & TermParser)
     .Map([](auto&& args) -> Monomial
     {
@@ -102,11 +106,11 @@ auto UnaryParser =
  * 
  *         expression ::= unary { ( "+" | "-" ) unary }
  */
-auto BinaryParser =
+inline auto BinaryParser =
     ((Plus | Minus) & UnaryParser)
     .Map([](auto&& args) -> Monomial
     {
-        auto& [ op, monomial ] = args;
+        auto& [op, monomial] = args;
         return op.type == Token::Type::Minus ? -monomial : monomial;
     });
 
@@ -117,7 +121,7 @@ auto BinaryParser =
  *         Parses at least one monomial and right folds chained arithmetic operators,
  *         combining individual monomials into a collection of them.
  */
-auto ExpressionParser =
+inline auto ExpressionParser =
     (UnaryParser & ZeroOrMore(BinaryParser))
     .Map([](auto&& args) -> std::vector<Monomial>
     {
@@ -133,7 +137,7 @@ auto ExpressionParser =
  *         Checks for the presence of a leading "f(x) = ..." and returns the parsed
  *         expression.
  */
-auto EquationParser = Function >> Equals >> ExpressionParser;
+inline auto EquationParser = Function >> Equals >> ExpressionParser;
 
 inline auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
 {
@@ -156,7 +160,7 @@ inline auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomia
             return {};
         }
 
-        polynomial[term.Exponent()].m_coefficient += term.Coefficient();
+        polynomial[term.Exponent()].AddCoefficient(term.Coefficient());
     }
 
     return polynomial;

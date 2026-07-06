@@ -1,6 +1,7 @@
 #include <frontend/lexer.h>
 
 #include <stdexcept>
+#include <string_view>
 
 using namespace std::string_literals;
 
