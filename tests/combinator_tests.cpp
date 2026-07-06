@@ -177,13 +177,10 @@ TEST(CombinatorTests, choice_matches_first_parser)
 
     auto state = State(source);
 
-    auto parsers = std::vector<Parser<Token>>
-    {
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; }),
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; }),
-    };
+    auto p2 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; });
+    auto p1 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; });
 
-    auto result = Choice(parsers)(state);
+    auto result = (p1 | p2)(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value(), source[0]);
@@ -199,13 +196,10 @@ TEST(CombinatorTests, choice_matches_last_parser)
 
     auto state = State(source);
 
-    auto parsers = std::vector<Parser<Token>>
-    {
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; }),
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; }),
-    };
+    auto p1 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; });
+    auto p2 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; });
 
-    auto result = Choice(parsers)(state);
+    auto result = (p1 | p2)(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value(), source[0]);
@@ -221,13 +215,10 @@ TEST(CombinatorTests, choice_matches_no_parsers)
 
     auto state = State(source);
 
-    auto parsers = std::vector<Parser<Token>>
-    {
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; }),
-        Satisfy([](Token::Type type) -> bool { return type == Token::Type::Minus; }),
-    };
+    auto p1 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; });
+    auto p2 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Minus; });
 
-    auto result = Choice(parsers)(state);
+    auto result = (p1 | p2)(state);
 
     ASSERT_FALSE(result.Succeeded());
     ASSERT_EQ(result.Message(), "parser failure (choice)");
@@ -362,7 +353,7 @@ TEST(CombinatorTests, map_succeeds)
         return type == Token::Type::Number;
     });
 
-    auto result = Map(parser, [](Token token) -> int
+    auto result = parser.map([](Token token) -> int
     {
         return std::stoi(token.lexeme);
     })(state);
@@ -386,7 +377,7 @@ TEST(CombinatorTests, map_fails)
         return type == Token::Type::Plus;
     });
 
-    auto result = Map(parser, [](Token token) -> int
+    auto result = parser.map([](Token token) -> int
     {
         return std::stoi(token.lexeme);
     })(state);

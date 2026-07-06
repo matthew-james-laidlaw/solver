@@ -10,8 +10,50 @@ namespace solver
 /** @brief Any callable that returns a @ref Result given an input @ref State. The combinator
  *         system composes parsers responsible for portions of a grammar to parse the full grammar.
  */
+// template <typename T>
+// using Parser = std::function<Result<T>(State)>;
+
 template <typename T>
-using Parser = std::function<Result<T>(State)>;
+class Parser
+{
+private:
+    
+    using Fn = std::function<Result<T>(State)>;
+    Fn m_fn;
+
+public:
+
+    Parser(Fn f)
+        : m_fn(std::move(f))
+    {}
+
+    auto operator()(State state) const -> Result<T>
+    {
+        return m_fn(state);
+    }
+
+    template <typename F>
+    auto map(F mapper) const
+    {
+        using U = std::invoke_result_t<F, T const&>;
+
+        return Parser<U>(
+            [=, this](State state)
+            {
+                auto r = (*this)(state);
+
+                if (!r.Succeeded())
+                {
+                    return Result<U>::Failure(state, "parser failure (map)");
+                }
+
+                return Result<U>::Success(
+                    mapper(r.Value()),
+                    r.Rest());
+            });
+    }
+
+};
 
 /** @brief Parser that attempts the given predicate on the next element in the state. Advances the
  *         state on success, otherwise returns an error message.
@@ -19,7 +61,7 @@ using Parser = std::function<Result<T>(State)>;
 template <typename Predicate>
 auto Satisfy(Predicate predicate) -> Parser<Token>
 {
-    return [=](State state) -> Result<Token>
+    return Parser<Token>([=](State state) -> Result<Token>
     {
         if (state.Done())
         {
@@ -32,7 +74,7 @@ auto Satisfy(Predicate predicate) -> Parser<Token>
         }
 
         return Result<Token>::Success(state.Peek(), state.Advance());
-    };
+    });
 }
 
 /** @brief Parser that attempts each of the given sub-parsers in order. Expecting all of them to
@@ -41,7 +83,7 @@ auto Satisfy(Predicate predicate) -> Parser<Token>
 template <typename T>
 auto Sequence(std::vector<Parser<T>> parsers) -> Parser<std::vector<T>>
 {
-    return [=](State state) -> Result<std::vector<T>>
+    return Parser<std::vector<T>>([=](State state) -> Result<std::vector<T>>
     {
         auto original_state = state;
         auto results = std::vector<T>{};
@@ -58,27 +100,7 @@ auto Sequence(std::vector<Parser<T>> parsers) -> Parser<std::vector<T>>
         }
 
         return Result<std::vector<T>>::Success(results, state);
-    };
-}
-
-/** @brief Parser that attempts each of the given sub-parsers until one of them passes. Fails if
- *         none of the parsers succeed.
- */
-template <typename T>
-auto Choice(std::vector<Parser<T>> const& parsers) -> Parser<T>
-{
-    return [=](State state) -> Result<T>
-    {
-        for (auto const& parser : parsers)
-        {
-            auto result = parser(state);
-            if (result.Succeeded())
-            {
-                return result;
-            }
-        }
-        return Result<T>::Failure(state, "parser failure (choice)");
-    };
+    });
 }
 
 /** @brief Parser that attempts the given sub-parser indefinitely until it fails. Allows for no
@@ -87,7 +109,7 @@ auto Choice(std::vector<Parser<T>> const& parsers) -> Parser<T>
 template <typename T>
 auto ZeroOrMore(Parser<T> parser) -> Parser<std::vector<T>>
 {
-    return [=](State state) -> Result<std::vector<T>>
+    return Parser<std::vector<T>>([=](State state) -> Result<std::vector<T>>
     {
         std::vector<T> values;
 
@@ -97,7 +119,7 @@ auto ZeroOrMore(Parser<T> parser) -> Parser<std::vector<T>>
         }
 
         return Result<std::vector<T>>::Success(values, state);
-    };
+    });
 }
 
 /** @brief Parser that attempts the given sub-parser once. Allowing for no match.
@@ -105,7 +127,7 @@ auto ZeroOrMore(Parser<T> parser) -> Parser<std::vector<T>>
 template <typename T>
 auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
 {
-    return [=](State state) -> Result<std::optional<T>>
+    return Parser<std::optional<T>>([=](State state) -> Result<std::optional<T>>
     {
         auto result = parser(state);
         if (!result.Succeeded())
@@ -113,22 +135,7 @@ auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
             return Result<std::optional<T>>::Success(std::nullopt, state);
         }
         return Result<std::optional<T>>::Success(result.Value(), result.Rest());
-    };
-}
-
-template <typename T, typename F>
-auto Map(Parser<T> parser, F mapper) -> Parser<std::invoke_result_t<F, T const&>>
-{
-    using U = std::invoke_result_t<F, T const&>;
-    return [=](State state) -> Result<U>
-    {
-        auto r = parser(state);
-        if (!r.Succeeded())
-        {
-            return Result<U>::Failure(state, "parser failure (map)");
-        }
-        return Result<U>::Success(mapper(r.Value()), r.Rest());
-    };
+    });
 }
 
 /** @brief Parser that runs two sub-parsers in sequence, passes the state from the first into the
@@ -140,7 +147,7 @@ auto Combine(Parser<T1> a, Parser<T2> b, F combiner) -> Parser<std::invoke_resul
 {
     using R = std::invoke_result_t<F, T1, T2>;
 
-    return [=](State state) -> Result<R>
+    return Parser<R>([=](State state) -> Result<R>
     {
         auto result_a = a(state);
         if (!result_a.Succeeded())
@@ -155,13 +162,56 @@ auto Combine(Parser<T1> a, Parser<T2> b, F combiner) -> Parser<std::invoke_resul
         }
 
         return Result<R>::Success(combiner(result_a.Value(), result_b.Value()), result_b.Rest());
-    };
+    });
 }
 
 template <typename A, typename B>
-auto SkipThen(Parser<A> a, Parser<B> b) -> Parser<B>
+auto operator>>(Parser<A> a, Parser<B> b) -> Parser<B>
 {
     return Combine(a, b, [](A const&, B b) { return b; });
+}
+
+/** @brief Parser that attempts each of the given sub-parsers until one of them passes. Fails if
+ *         none of the parsers succeed.
+ */
+template <typename T>
+auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
+{
+    return Parser<T>([=](State state) -> Result<T>
+    {
+        for (auto const& parser : { a, b })
+        {
+            auto result = parser(state);
+            if (result.Succeeded())
+            {
+                return result;
+            }
+        }
+        return Result<T>::Failure(state, "parser failure (choice)");
+    });
+}
+
+template <typename A, typename B>
+auto operator&(Parser<A> a, Parser<B> b) -> Parser<std::tuple<A, B>>
+{
+    using R = std::tuple<A, B>;
+
+    return Parser<R>([=](State state) -> Result<R>
+    {
+        auto result_a = a(state);
+        if (!result_a.Succeeded())
+        {
+            return Result<R>::Failure(state, "parser failure (combine)");
+        }
+
+        auto result_b = b(result_a.Rest());
+        if (!result_b.Succeeded())
+        {
+            return Result<R>::Failure(state, "parser failure (combine)");
+        }
+
+        return Result<R>::Success({ result_a.Value(), result_b.Value() }, result_b.Rest());
+    });
 }
 
 } // namespace solver

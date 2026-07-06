@@ -50,9 +50,7 @@ auto ToInt = [](Token const& t)
 auto power =
     Combine(
         Variable,
-        Maybe(
-            SkipThen(Caret, Map(Number, ToInt))
-        ),
+        Maybe(Caret >> Number.map(ToInt)),
         [](Token const&, std::optional<int> exp)
         {
             return Monomial{1, exp.value_or(1)};
@@ -60,9 +58,8 @@ auto power =
     );
 
 auto term =
-    Choice<Monomial>({
         Combine(
-            Map(Number, ToInt),
+            Number.map(ToInt),
             Maybe(power),
             [](int coefficient, std::optional<Monomial> power)
             {
@@ -74,9 +71,8 @@ auto term =
                 {
                     return Monomial(coefficient, 0);
                 }
-            }),
-        power
-    });
+            }
+        ) | power;
 
 auto unary = 
     Combine(
@@ -95,9 +91,11 @@ auto unary =
         }
     );
 
+// auto binary_term = ((Plus | Minus) & unary)
+
 auto binary_term =
     Combine(
-        Choice<Token>({ Plus, Minus }),
+        Plus | Minus,
         unary,
         [](Token op, Monomial term)
         {
@@ -121,14 +119,7 @@ auto expression =
         }
     );
 
-auto equation =
-    SkipThen(
-        Sequence<Token>({
-            Function,
-            Equals
-        }),
-        expression
-    );
+auto equation = Sequence<Token>({Function, Equals}) >> expression;
 
 inline auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
 {
