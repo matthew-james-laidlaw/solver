@@ -59,8 +59,8 @@ public:
 
 };
 
-/** @brief Parser that attempts the given predicate on the next element in the state. Advances the
- *         state on success, otherwise returns an error message.
+/** @brief Parser that attempts the given predicate on the next element in the state.
+ *         Advances the state on success, otherwise returns an error message.
  */
 template <typename Predicate>
 auto Satisfy(Predicate predicate) -> Parser<Token>
@@ -81,26 +81,7 @@ auto Satisfy(Predicate predicate) -> Parser<Token>
     });
 }
 
-/** @brief Parser that attempts the given sub-parser indefinitely until it fails. Allows for no
- *         matches.
- */
-template <typename T>
-auto ZeroOrMore(Parser<T> parser) -> Parser<std::vector<T>>
-{
-    return Parser<std::vector<T>>([=](State state) -> Result<std::vector<T>>
-    {
-        std::vector<T> values;
-
-        for (auto result = parser(state); result.Succeeded(); state = result.Rest(), result = parser(state))
-        {
-            values.push_back(result.Value());
-        }
-
-        return Result<std::vector<T>>::Success(values, state);
-    });
-}
-
-/** @brief Parser that attempts the given sub-parser once. Allowing for no match.
+/** @brief Parser that attempts the given parser once. Allowing for no match.
  */
 template <typename T>
 auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
@@ -116,6 +97,27 @@ auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
     });
 }
 
+/** @brief "Many" parser that attempts the given parser indefinitely until it fails.
+ *         Allows for no matches.
+ */
+template <typename T>
+auto operator*(Parser<T> parser) -> Parser<std::vector<T>>
+{
+    return Parser<std::vector<T>>([=](State state) -> Result<std::vector<T>>
+    {
+        std::vector<T> values;
+
+        for (auto result = parser(state); result.Succeeded(); state = result.Rest(), result = parser(state))
+        {
+            values.push_back(result.Value());
+        }
+
+        return Result<std::vector<T>>::Success(values, state);
+    });
+}
+
+/** @brief "Fold right" parser that matches two parsers, ignoring the result of the first.
+ */
 template <typename A, typename B>
 auto operator>>(Parser<A> a, Parser<B> b) -> Parser<B>
 {
@@ -126,8 +128,8 @@ auto operator>>(Parser<A> a, Parser<B> b) -> Parser<B>
     });
 }
 
-/** @brief Parser that attempts each of the given sub-parsers until one of them passes. Fails if
- *         none of the parsers succeed.
+/** @brief "Choice" parser that attempts each of the given parsers in sequences until one
+ *         of them passes. Fails if none of the parsers succeed.
  */
 template <typename T>
 auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
@@ -146,8 +148,8 @@ auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
     });
 }
 
-/** @brief Parser that runs two sub-parsers in sequence, passes the state from the first
- *         into the second, then folds both results into a tuple.
+/** @brief "Combine" parser that runs two parsers in sequence, then folds both results
+ *         into a tuple.
  */
 template <typename A, typename B>
 auto operator&(Parser<A> a, Parser<B> b) -> Parser<std::tuple<A, B>>

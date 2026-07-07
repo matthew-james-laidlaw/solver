@@ -150,7 +150,7 @@ TEST(CombinatorTests, zero_or_more_matches_once)
         return type == Token::Type::Number;
     });
 
-    auto result = ZeroOrMore(parser)(state);
+    auto result = (*parser)(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value().size(), 1);
@@ -175,7 +175,7 @@ TEST(CombinatorTests, zero_or_more_matches_multiple_times)
         return type == Token::Type::Number;
     });
 
-    auto result = ZeroOrMore(parser)(state);
+    auto result = (*parser)(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value().size(), 3);
@@ -199,7 +199,7 @@ TEST(CombinatorTests, zero_or_more_matches_none)
         return type == Token::Type::Plus;
     });
 
-    auto result = ZeroOrMore(parser)(state);
+    auto result = (*parser)(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_TRUE(result.Value().empty());

@@ -11,43 +11,15 @@
 namespace solver
 {
 
-inline auto Variable = Satisfy([](Token::Type t)
-{
-    return t == Token::Type::Variable;
-});
+inline auto Variable = Satisfy([](Token::Type t) { return t == Token::Type::Variable; });
+inline auto Caret = Satisfy([](Token::Type t) { return t == Token::Type::Caret; });
+inline auto Plus = Satisfy([](Token::Type t) { return t == Token::Type::Plus; });
+inline auto Minus = Satisfy([](Token::Type t) { return t == Token::Type::Minus; });
+inline auto Function = Satisfy([](Token::Type t) { return t == Token::Type::Function; });
+inline auto Equals = Satisfy([](Token::Type t) { return t == Token::Type::Equals; });
 
-inline auto Number = Satisfy([](Token::Type t)
-{
-    return t == Token::Type::Number;
-}).Map([](Token const& token)
-{
-    return std::stoi(token.lexeme);
-});
-
-inline auto Caret = Satisfy([](Token::Type t)
-{
-    return t == Token::Type::Caret;
-});
-
-inline auto Plus = Satisfy([](Token::Type t)
-{
-    return t == Token::Type::Plus;
-});
-
-inline auto Minus = Satisfy([](Token::Type t)
-{
-    return t == Token::Type::Minus;
-});
-
-inline auto Function = Satisfy([](Token::Type t)
-{
-    return t == Token::Type::Function;
-});
-
-inline auto Equals = Satisfy([](Token::Type t)
-{
-    return t == Token::Type::Equals;
-});
+inline auto ToInt = [](Token token) -> int { return std::stoi(token.lexeme); };
+inline auto Number = Satisfy([](Token::Type t){ return t == Token::Type::Number; }).Map(ToInt);
 
 /** @brief Parses the grammar rule:
  * 
@@ -122,7 +94,7 @@ inline auto BinaryParser =
  *         combining individual monomials into a collection of them.
  */
 inline auto ExpressionParser =
-    (UnaryParser & ZeroOrMore(BinaryParser))
+    (UnaryParser & *BinaryParser)
     .Map([](auto&& args) -> std::vector<Monomial>
     {
         auto [first, rest] = args;
@@ -139,42 +111,8 @@ inline auto ExpressionParser =
  */
 inline auto EquationParser = Function >> Equals >> ExpressionParser;
 
-inline auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
-{
-    int order = 0;
-    for (auto term : monomials)
-    {
-        order = std::max(order, term.Exponent());
-    }
-
-    std::vector<Monomial> polynomial(order, Monomial(0, 0));
-    for (int i = 0; i < order; ++i)
-    {
-        polynomial[i] = Monomial(0, i);
-    }
-
-    for (auto term : monomials)
-    {
-        if (term.Exponent() < 0)
-        {
-            return {};
-        }
-
-        polynomial[term.Exponent()].AddCoefficient(term.Coefficient());
-    }
-
-    return polynomial;
-}
-
-inline auto Parse(std::vector<Token> const& source) -> std::vector<Monomial>
-{
-    std::span<const Token> state(source);
-    auto result = EquationParser(state);
-    if (!result.Succeeded())
-    {
-        return {};
-    }
-    return Canonicalize(result.Value());
-}
+/** @brief Parse an equation
+ */
+auto Parse(std::vector<Token> const& source) -> std::vector<Monomial>;
 
 } // namespace solver
