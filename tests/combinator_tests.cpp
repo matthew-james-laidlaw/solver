@@ -4,19 +4,20 @@
 
 using namespace solver;
 
+auto Is(Token::Type type)
+{
+    return Satisfy([type](Token::Type t) { return t == type; });
+}
+
 TEST(CombinatorTests, satisfy_predicate_succeeds)
 {
     auto source = std::vector<Token>
     {
         { .type = Token::Type::Function, .lexeme = "f(x)" },
     };
-
     auto state = State(source);
 
-    auto result = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Function;
-    })(state);
+    auto result = Is(Token::Type::Function)(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value(), source[0]);
@@ -29,13 +30,9 @@ TEST(CombinatorTests, satisfy_predicate_fails)
     {
         { .type = Token::Type::Function, .lexeme = "f(x)" },
     };
-
     auto state = State(source);
 
-    auto result = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Plus;
-    })(state);
+    auto result = Is(Token::Type::Plus)(state);
 
     ASSERT_FALSE(result.Succeeded());
     ASSERT_EQ(result.Message(), "unexpected token");
@@ -45,13 +42,9 @@ TEST(CombinatorTests, satisfy_predicate_fails)
 TEST(CombinatorTests, satisfy_empty_state)
 {
     auto source = std::vector<Token>{};
-
     auto state = State(source);
 
-    auto result = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Plus;
-    })(state);
+    auto result = Is(Token::Type::Plus)(state);
 
     ASSERT_FALSE(result.Succeeded());
     ASSERT_EQ(result.Message(), "unexpected end of input");
@@ -65,13 +58,9 @@ TEST(CombinatorTests, satisfy_predicate_advances_state)
         { .type = Token::Type::Function, .lexeme = "f(x)" },
         { .type = Token::Type::Equals, .lexeme = "=" },
     };
-
     auto state = State(source);
 
-    auto result = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Function;
-    })(state);
+    auto result = Is(Token::Type::Function)(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value(), source[0]);
@@ -84,13 +73,9 @@ TEST(CombinatorTests, choice_matches_first_parser)
     {
         { .type = Token::Type::Function, .lexeme = "f(x)" },
     };
-
     auto state = State(source);
 
-    auto p2 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; });
-    auto p1 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; });
-
-    auto result = (p1 | p2)(state);
+    auto result = (Is(Token::Type::Function) | Is(Token::Type::Plus))(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value(), source[0]);
@@ -103,13 +88,9 @@ TEST(CombinatorTests, choice_matches_last_parser)
     {
         { .type = Token::Type::Function, .lexeme = "f(x)" },
     };
-
     auto state = State(source);
 
-    auto p1 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; });
-    auto p2 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Function; });
-
-    auto result = (p1 | p2)(state);
+    auto result = (Is(Token::Type::Plus) | Is(Token::Type::Function))(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value(), source[0]);
@@ -122,13 +103,9 @@ TEST(CombinatorTests, choice_matches_no_parsers)
     {
         { .type = Token::Type::Function, .lexeme = "f(x)" },
     };
-
     auto state = State(source);
 
-    auto p1 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Plus; });
-    auto p2 = Satisfy([](Token::Type type) -> bool { return type == Token::Type::Minus; });
-
-    auto result = (p1 | p2)(state);
+    auto result = (Is(Token::Type::Plus) | Is(Token::Type::Minus))(state);
 
     ASSERT_FALSE(result.Succeeded());
     ASSERT_EQ(result.Message(), "parser failure (choice)");
@@ -142,15 +119,9 @@ TEST(CombinatorTests, zero_or_more_matches_once)
         { .type = Token::Type::Number, .lexeme = "1" },
         { .type = Token::Type::Variable, .lexeme = "x" },
     };
-
     auto state = State(source);
 
-    auto parser = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Number;
-    });
-
-    auto result = (*parser)(state);
+    auto result = (*(Is(Token::Type::Number)))(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value().size(), 1);
@@ -167,15 +138,9 @@ TEST(CombinatorTests, zero_or_more_matches_multiple_times)
         { .type = Token::Type::Number, .lexeme = "3" },
         { .type = Token::Type::Variable, .lexeme = "x" },
     };
-
     auto state = State(source);
 
-    auto parser = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Number;
-    });
-
-    auto result = (*parser)(state);
+    auto result = (*(Is(Token::Type::Number)))(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value().size(), 3);
@@ -191,15 +156,9 @@ TEST(CombinatorTests, zero_or_more_matches_none)
     {
         { .type = Token::Type::Number, .lexeme = "1" },
     };
-
     auto state = State(source);
 
-    auto parser = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Plus;
-    });
-
-    auto result = (*parser)(state);
+    auto result = (*(Is(Token::Type::Plus)))(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_TRUE(result.Value().empty());
@@ -212,15 +171,9 @@ TEST(CombinatorTests, maybe_matches)
     {
         { .type = Token::Type::Number, .lexeme = "1" },
     };
-
     auto state = State(source);
 
-    auto parser = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Number;
-    });
-
-    auto result = Maybe(parser)(state);
+    auto result = Maybe(Is(Token::Type::Number))(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_TRUE(result.Value().has_value());
@@ -234,15 +187,9 @@ TEST(CombinatorTests, maybe_does_not_match)
     {
         { .type = Token::Type::Number, .lexeme = "1" },
     };
-
     auto state = State(source);
 
-    auto parser = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Plus;
-    });
-
-    auto result = Maybe(parser)(state);
+    auto result = Maybe(Is(Token::Type::Plus))(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_FALSE(result.Value().has_value());
@@ -255,15 +202,9 @@ TEST(CombinatorTests, map_succeeds)
     {
         { .type = Token::Type::Number, .lexeme = "1" },
     };
-
     auto state = State(source);
 
-    auto parser = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Number;
-    });
-
-    auto result = parser.Map([](Token token) -> int
+    auto result = Is(Token::Type::Number).Map([](Token token) -> int
     {
         return std::stoi(token.lexeme);
     })(state);
@@ -282,12 +223,7 @@ TEST(CombinatorTests, map_fails)
 
     auto state = State(source);
 
-    auto parser = Satisfy([](Token::Type type) -> bool
-    {
-        return type == Token::Type::Plus;
-    });
-
-    auto result = parser.Map([](Token token) -> int
+    auto result = Is(Token::Type::Plus).Map([](Token token) -> int
     {
         return std::stoi(token.lexeme);
     })(state);
