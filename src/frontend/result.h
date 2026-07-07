@@ -7,9 +7,8 @@
 
 namespace solver
 {
-
-/** @brief The outcome of running a parser. On success, holds a value and the remaining state. On
- *         failure, holds the remaining state and an error message.
+/** @brief The outcome of running a parser. On success, holds a value and the remaining
+ *         state. On failure, holds the remaining state and an error message.
  */
 template <typename T>
 class Result
@@ -18,23 +17,23 @@ private:
 
     bool m_ok;
     std::optional<T> m_value;
-    State m_state;
+    State m_rest;
     std::string m_message;
 
-    Result(bool ok, std::optional<T> value, State state, std::string message)
-        : m_ok(ok), m_value(value), m_state(state), m_message(message)
+    Result(bool ok, std::optional<T> value, State rest, std::string message)
+        : m_ok(ok), m_value(value), m_rest(rest), m_message(message)
     {}
 
 public:
 
-    static auto Success(T value, State state) -> Result
+    static auto Success(T value, State rest) -> Result
     {
-        return Result(true, std::move(value), state, "");
+        return Result(true, std::move(value), rest, "");
     }
 
-    static auto Failure(State state, std::string message) -> Result
+    static auto Failure(State rest, std::string message) -> Result
     {
-        return Result(false, std::nullopt, state, message);
+        return Result(false, std::nullopt, rest, message);
     }
 
     auto Succeeded() const -> bool
@@ -54,7 +53,7 @@ public:
 
     auto Rest() -> State
     {
-        return m_state;
+        return m_rest;
     }
 
     auto Message() const -> std::string const&
