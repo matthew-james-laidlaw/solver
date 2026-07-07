@@ -8,6 +8,8 @@
 namespace solver
 {
 
+/** @brief Transform a source string into a collection of tokens.
+ */
 auto Lex(std::string const& source) -> std::vector<Token>;
 
 } // namespace solver
