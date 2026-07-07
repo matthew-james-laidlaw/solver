@@ -111,7 +111,7 @@ inline auto ExpressionParser =
  */
 inline auto EquationParser = Function >> Equals >> ExpressionParser;
 
-/** @brief Parse an equation
+/** @brief Parses an equation
  */
 auto Parse(std::vector<Token> const& source) -> std::vector<Monomial>;
 
