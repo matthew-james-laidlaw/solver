@@ -12,9 +12,8 @@ auto Is(Token::Type type)
 
 TEST(CombinatorTests, satisfy_predicate_succeeds)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Function, .lexeme = "f(x)" },
+    auto source = std::vector<Token>{
+        {.type = Type::Function, .lexeme = "f(x)"},
     };
     auto state = State(source);
 
@@ -27,9 +26,8 @@ TEST(CombinatorTests, satisfy_predicate_succeeds)
 
 TEST(CombinatorTests, satisfy_predicate_fails)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Function, .lexeme = "f(x)" },
+    auto source = std::vector<Token>{
+        {.type = Type::Function, .lexeme = "f(x)"},
     };
     auto state = State(source);
 
@@ -54,10 +52,9 @@ TEST(CombinatorTests, satisfy_empty_state)
 
 TEST(CombinatorTests, satisfy_predicate_advances_state)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Function, .lexeme = "f(x)" },
-        { .type = Type::Equals, .lexeme = "=" },
+    auto source = std::vector<Token>{
+        {.type = Type::Function, .lexeme = "f(x)"},
+        {.type = Type::Equals, .lexeme = "="},
     };
     auto state = State(source);
 
@@ -70,9 +67,8 @@ TEST(CombinatorTests, satisfy_predicate_advances_state)
 
 TEST(CombinatorTests, choice_matches_first_parser)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Function, .lexeme = "f(x)" },
+    auto source = std::vector<Token>{
+        {.type = Type::Function, .lexeme = "f(x)"},
     };
     auto state = State(source);
 
@@ -85,9 +81,8 @@ TEST(CombinatorTests, choice_matches_first_parser)
 
 TEST(CombinatorTests, choice_matches_last_parser)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Function, .lexeme = "f(x)" },
+    auto source = std::vector<Token>{
+        {.type = Type::Function, .lexeme = "f(x)"},
     };
     auto state = State(source);
 
@@ -100,9 +95,8 @@ TEST(CombinatorTests, choice_matches_last_parser)
 
 TEST(CombinatorTests, choice_matches_no_parsers)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Function, .lexeme = "f(x)" },
+    auto source = std::vector<Token>{
+        {.type = Type::Function, .lexeme = "f(x)"},
     };
     auto state = State(source);
 
@@ -115,10 +109,9 @@ TEST(CombinatorTests, choice_matches_no_parsers)
 
 TEST(CombinatorTests, zero_or_more_matches_once)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Number, .lexeme = "1" },
-        { .type = Type::Variable, .lexeme = "x" },
+    auto source = std::vector<Token>{
+        {.type = Type::Number, .lexeme = "1"},
+        {.type = Type::Variable, .lexeme = "x"},
     };
     auto state = State(source);
 
@@ -132,12 +125,11 @@ TEST(CombinatorTests, zero_or_more_matches_once)
 
 TEST(CombinatorTests, zero_or_more_matches_multiple_times)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Number, .lexeme = "1" },
-        { .type = Type::Number, .lexeme = "2" },
-        { .type = Type::Number, .lexeme = "3" },
-        { .type = Type::Variable, .lexeme = "x" },
+    auto source = std::vector<Token>{
+        {.type = Type::Number, .lexeme = "1"},
+        {.type = Type::Number, .lexeme = "2"},
+        {.type = Type::Number, .lexeme = "3"},
+        {.type = Type::Variable, .lexeme = "x"},
     };
     auto state = State(source);
 
@@ -153,9 +145,8 @@ TEST(CombinatorTests, zero_or_more_matches_multiple_times)
 
 TEST(CombinatorTests, zero_or_more_matches_none)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Number, .lexeme = "1" },
+    auto source = std::vector<Token>{
+        {.type = Type::Number, .lexeme = "1"},
     };
     auto state = State(source);
 
@@ -168,9 +159,8 @@ TEST(CombinatorTests, zero_or_more_matches_none)
 
 TEST(CombinatorTests, maybe_matches)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Number, .lexeme = "1" },
+    auto source = std::vector<Token>{
+        {.type = Type::Number, .lexeme = "1"},
     };
     auto state = State(source);
 
@@ -184,9 +174,8 @@ TEST(CombinatorTests, maybe_matches)
 
 TEST(CombinatorTests, maybe_does_not_match)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Number, .lexeme = "1" },
+    auto source = std::vector<Token>{
+        {.type = Type::Number, .lexeme = "1"},
     };
     auto state = State(source);
 
@@ -199,16 +188,14 @@ TEST(CombinatorTests, maybe_does_not_match)
 
 TEST(CombinatorTests, map_succeeds)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Number, .lexeme = "1" },
+    auto source = std::vector<Token>{
+        {.type = Type::Number, .lexeme = "1"},
     };
     auto state = State(source);
 
-    auto result = Is(Type::Number).Map([](Token token) -> int
-    {
-        return std::stoi(token.lexeme);
-    })(state);
+    auto result =
+        Is(Type::Number)
+            .Map([](Token token) -> int { return std::stoi(token.lexeme); })(state);
 
     ASSERT_TRUE(result.Succeeded());
     ASSERT_EQ(result.Value(), 1);
@@ -217,17 +204,15 @@ TEST(CombinatorTests, map_succeeds)
 
 TEST(CombinatorTests, map_fails)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Type::Number, .lexeme = "1" },
+    auto source = std::vector<Token>{
+        {.type = Type::Number, .lexeme = "1"},
     };
 
     auto state = State(source);
 
-    auto result = Is(Type::Plus).Map([](Token token) -> int
-    {
-        return std::stoi(token.lexeme);
-    })(state);
+    auto result =
+        Is(Type::Plus)
+            .Map([](Token token) -> int { return std::stoi(token.lexeme); })(state);
 
     ASSERT_FALSE(result.Succeeded());
     ASSERT_EQ(result.Message(), "parser failure (map)");

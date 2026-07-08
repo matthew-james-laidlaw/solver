@@ -26,7 +26,6 @@ public:
 
     auto operator+(int coefficient) const -> Monomial;
     auto operator-() const -> Monomial;
-
 };
 
 } // namespace solver

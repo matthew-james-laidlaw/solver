@@ -1,3 +1,5 @@
+// clang-format off
+
 #pragma once
 
 #include <backend/monomial.h>
@@ -23,7 +25,6 @@ inline auto Equals   = Satisfy([](Token::Type t) { return t == Token::Type::Equa
 
 inline auto ToInt = [](Token token) -> int { return std::stoi(token.lexeme); };
 inline auto Number = Satisfy([](Token::Type t){ return t == Token::Type::Number; }).Map(ToInt);
-
 
 /* --------------------- *
  |     Grammar Rules     |
@@ -120,3 +121,5 @@ inline auto ExpressionParser =
 inline auto EquationParser = Function >> Equals >> ExpressionParser;
 
 } // namespace solver
+
+// clang-format on

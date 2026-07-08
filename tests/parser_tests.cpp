@@ -9,10 +9,7 @@ using namespace solver;
 
 TEST(ParserTests, parse_power_no_exponent)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Variable, .lexeme = "x" }
-    };
+    auto source = std::vector<Token>{{.type = Token::Type::Variable, .lexeme = "x"}};
 
     State state(source);
 
@@ -30,11 +27,10 @@ TEST(ParserTests, parse_power_no_exponent)
 
 TEST(ParserTests, parse_power_with_exponent)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
     };
 
     State state(source);
@@ -53,9 +49,8 @@ TEST(ParserTests, parse_power_with_exponent)
 
 TEST(ParserTests, parse_term_constant)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Number, .lexeme = "5" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Number, .lexeme = "5"},
     };
 
     State state(source);
@@ -74,9 +69,8 @@ TEST(ParserTests, parse_term_constant)
 
 TEST(ParserTests, parse_term_variable)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Variable, .lexeme = "x" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Variable, .lexeme = "x"},
     };
 
     State state(source);
@@ -95,12 +89,11 @@ TEST(ParserTests, parse_term_variable)
 
 TEST(ParserTests, parse_term_monomial)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Number, .lexeme = "5" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Number, .lexeme = "5"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
     };
 
     State state(source);
@@ -119,12 +112,11 @@ TEST(ParserTests, parse_term_monomial)
 
 TEST(ParserTests, parse_unary_positive)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Number, .lexeme = "5" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Number, .lexeme = "5"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
     };
 
     State state(source);
@@ -143,13 +135,12 @@ TEST(ParserTests, parse_unary_positive)
 
 TEST(ParserTests, parse_unary_negative)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Minus, .lexeme = "-" },
-        { .type = Token::Type::Number, .lexeme = "5" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Minus, .lexeme = "-"},
+        {.type = Token::Type::Number, .lexeme = "5"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
     };
 
     State state(source);
@@ -168,12 +159,11 @@ TEST(ParserTests, parse_unary_negative)
 
 TEST(ParserTests, parse_expression_term)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Number, .lexeme = "5" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Number, .lexeme = "5"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
     };
 
     State state(source);
@@ -193,17 +183,16 @@ TEST(ParserTests, parse_expression_term)
 
 TEST(ParserTests, parse_expression_plus)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Number, .lexeme = "5" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
-        { .type = Token::Type::Plus, .lexeme = "+" },
-        { .type = Token::Type::Number, .lexeme = "6" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "3" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Number, .lexeme = "5"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
+        {.type = Token::Type::Plus, .lexeme = "+"},
+        {.type = Token::Type::Number, .lexeme = "6"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "3"},
     };
 
     State state(source);
@@ -225,17 +214,16 @@ TEST(ParserTests, parse_expression_plus)
 
 TEST(ParserTests, parse_expression_minus)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Number, .lexeme = "5" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
-        { .type = Token::Type::Minus, .lexeme = "-" },
-        { .type = Token::Type::Number, .lexeme = "6" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "3" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Number, .lexeme = "5"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
+        {.type = Token::Type::Minus, .lexeme = "-"},
+        {.type = Token::Type::Number, .lexeme = "6"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "3"},
     };
 
     State state(source);
@@ -257,24 +245,23 @@ TEST(ParserTests, parse_expression_minus)
 
 TEST(ParserTests, parse_polynomial)
 {
-    auto source = std::vector<Token>
-    {
-        { .type = Token::Type::Function, .lexeme = "f(x)" },
-        { .type = Token::Type::Equals, .lexeme = "=" },
-        { .type = Token::Type::Number, .lexeme = "5" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
-        { .type = Token::Type::Minus, .lexeme = "-" },
-        { .type = Token::Type::Number, .lexeme = "6" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "3" },
-        { .type = Token::Type::Plus, .lexeme = "+" },
-        { .type = Token::Type::Number, .lexeme = "4" },
-        { .type = Token::Type::Variable, .lexeme = "x" },
-        { .type = Token::Type::Caret, .lexeme = "^" },
-        { .type = Token::Type::Number, .lexeme = "2" },
+    auto source = std::vector<Token>{
+        {.type = Token::Type::Function, .lexeme = "f(x)"},
+        {.type = Token::Type::Equals, .lexeme = "="},
+        {.type = Token::Type::Number, .lexeme = "5"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
+        {.type = Token::Type::Minus, .lexeme = "-"},
+        {.type = Token::Type::Number, .lexeme = "6"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "3"},
+        {.type = Token::Type::Plus, .lexeme = "+"},
+        {.type = Token::Type::Number, .lexeme = "4"},
+        {.type = Token::Type::Variable, .lexeme = "x"},
+        {.type = Token::Type::Caret, .lexeme = "^"},
+        {.type = Token::Type::Number, .lexeme = "2"},
     };
 
     auto mono = Parse(source);

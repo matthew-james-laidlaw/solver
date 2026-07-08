@@ -9,9 +9,13 @@ struct Token
 {
     enum class Type
     {
-        Function, Equals,    // keywords
-        Plus, Minus, Caret,  // operators
-        Number, Variable,    // primaries
+        Function,
+        Equals,
+        Plus,
+        Minus,
+        Caret,
+        Number,
+        Variable,
         Nothing,
     };
 

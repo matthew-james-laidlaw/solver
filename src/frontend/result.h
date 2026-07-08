@@ -10,8 +10,7 @@ namespace solver
 /** @brief The outcome of running a parser. On success, holds a value and the remaining
  *         state. On failure, holds the remaining state and an error message.
  */
-template <typename T>
-class Result
+template <typename T> class Result
 {
 private:
 
@@ -22,7 +21,8 @@ private:
 
     Result(bool ok, std::optional<T> value, State rest, std::string message)
         : m_ok(ok), m_value(value), m_rest(rest), m_message(message)
-    {}
+    {
+    }
 
 public:
 
@@ -60,7 +60,6 @@ public:
     {
         return m_message;
     }
-
 };
 
 } // namespace solver

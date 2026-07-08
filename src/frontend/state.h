@@ -15,16 +15,15 @@ class State
 {
 private:
 
-    std::span<const Token> m_source;
+    std::span<Token const> m_source;
 
 public:
 
-    State(std::span<const Token> source);
+    State(std::span<Token const> source);
 
     auto Done() const -> bool;
     auto Peek() const -> Token;
     auto Advance() const -> State;
-
 };
 
 } // namespace solver
