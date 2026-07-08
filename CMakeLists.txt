@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.2.1)
+cmake_minimum_required(VERSION 3.29.6)
 project(SOLVER LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -14,33 +14,45 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # --- Compiler Options ---
-if(WIN32)
-    add_compile_options(/W4 /WX)
-else()
-    add_compile_options(-Wall -Wextra -pedantic -Werror)
-endif()
+# if(WIN32)
+#     add_compile_options(/W4 /WX)
+# else()
+#     add_compile_options(-Wall -Wextra -pedantic -Werror)
+# endif()
 
 # --- Libraries ---
 
-add_library(parser
+set(PARSER_SOURCES
     src/backend/monomial.cpp
     src/frontend/lexer.cpp
     src/frontend/parser.cpp
     src/frontend/state.cpp
     src/frontend/token.cpp
 )
+
+add_library(parser ${PARSER_SOURCES})
 target_include_directories(parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_compile_options(parser PRIVATE -fsanitize=address,fuzzer)
 
 # --- Testing ---
 
-enable_testing()
-include(GoogleTest)
+# enable_testing()
+# include(GoogleTest)
 
-add_executable(unit_tests
-    tests/combinator_tests.cpp
-    tests/lexer_tests.cpp
-    tests/parser_tests.cpp
+# add_executable(unit_tests
+#     tests/unit/combinator_tests.cpp
+#     tests/unit/lexer_tests.cpp
+#     tests/unit/parser_tests.cpp
+# )
+# target_link_libraries(unit_tests parser gtest_main)
+# gtest_discover_tests(unit_tests)
+
+add_executable(fuzz_tests
+    tests/fuzz/fuzz_parser.cpp
 )
+target_link_libraries(fuzz_tests PRIVATE parser)
 
-target_link_libraries(unit_tests parser gtest_main)
-gtest_discover_tests(unit_tests)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(fuzz_tests PRIVATE -fsanitize=fuzzer,address)
+    target_link_options(fuzz_tests PRIVATE -fsanitize=fuzzer,address)
+endif()

@@ -1,0 +1,21 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "fuzzer",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "fuzzer",
+            "configurePreset": "fuzzer",
+            "configuration": "RelWithDebInfo"
+        }
+    ]
+}
