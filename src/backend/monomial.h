@@ -5,6 +5,8 @@
 namespace solver
 {
 
+/** @brief Represents a single term of a polynomial with form cx^n.
+ */
 class Monomial
 {
 private:
@@ -22,8 +24,7 @@ public:
     auto Coefficient() const -> int;
     auto Exponent() const -> int;
 
-    auto AddCoefficient(int coefficient) -> void;
-
+    auto operator+(int coefficient) const -> Monomial;
     auto operator-() const -> Monomial;
 
 };

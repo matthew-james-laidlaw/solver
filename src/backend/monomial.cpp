@@ -28,14 +28,14 @@ auto Monomial::Exponent() const -> int
     return m_exponent;
 }
 
-auto Monomial::AddCoefficient(int coefficient) -> void
+auto Monomial::operator+(int coefficient) const -> Monomial
 {
-    m_coefficient += coefficient;
+    return Monomial{m_coefficient + coefficient, m_exponent };
 }
 
 auto Monomial::operator-() const -> Monomial
 {
-    return Monomial(-m_coefficient, m_exponent);
+    return Monomial{ -m_coefficient, m_exponent };
 }
 
 } // namespace solver

@@ -25,6 +25,7 @@ endif()
 add_library(parser
     src/backend/monomial.cpp
     src/frontend/lexer.cpp
+    src/frontend/parser.cpp
     src/frontend/state.cpp
     src/frontend/token.cpp
 )

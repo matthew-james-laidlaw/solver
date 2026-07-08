@@ -1,4 +1,8 @@
+#include <frontend/grammar.h>
+#include <frontend/lexer.h>
 #include <frontend/parser.h>
+
+#include <span>
 
 namespace solver
 {
@@ -11,8 +15,8 @@ auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
         order = std::max(order, term.Exponent());
     }
 
-    std::vector<Monomial> polynomial(order, Monomial(0, 0));
-    for (int i = 0; i < order; ++i)
+    std::vector<Monomial> polynomial(order + 1, Monomial(0, 0));
+    for (size_t i = 0; i < polynomial.size(); ++i)
     {
         polynomial[i] = Monomial(0, i);
     }
@@ -24,7 +28,7 @@ auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
             return {};
         }
 
-        polynomial[term.Exponent()].AddCoefficient(term.Coefficient());
+        polynomial[term.Exponent()] = polynomial[term.Exponent()] + term.Coefficient();
     }
 
     return polynomial;
@@ -39,6 +43,12 @@ auto Parse(std::vector<Token> const& source) -> std::vector<Monomial>
         return {};
     }
     return Canonicalize(result.Value());
+}
+
+auto Parse(std::string const& source) -> std::vector<Monomial>
+{
+    auto lexed = Lex(source);
+    return Parse(lexed);
 }
 
 } // namespace solver

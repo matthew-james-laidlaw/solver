@@ -12,8 +12,8 @@
 namespace solver
 {
 
-/** @brief Any callable that returns a @ref Result given an input @ref State. The combinator
- *         system composes parsers responsible for portions of a grammar to parse the full grammar.
+/** @brief Any callable that returns a Result given an input State. The combinator system
+ *         composes parsers responsible for portions of a grammar to parse the full grammar.
  */
 template <typename T>
 class Parser
@@ -25,8 +25,8 @@ private:
 
 public:
 
-    Parser(Fn f)
-        : m_fn(std::move(f))
+    Parser(Fn fn)
+        : m_fn(std::move(fn))
     {}
 
     auto operator()(State state) const -> Result<T>

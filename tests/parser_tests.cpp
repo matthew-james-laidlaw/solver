@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <frontend/grammar.h>
 #include <frontend/parser.h>
+#include <frontend/state.h>
 #include <frontend/token.h>
 
 using namespace solver;
@@ -251,4 +253,42 @@ TEST(ParserTests, parse_expression_minus)
     ASSERT_EQ(mono[1].Exponent(), 3);
 
     EXPECT_TRUE(result.Rest().Done());
+}
+
+TEST(ParserTests, parse_polynomial)
+{
+    auto source = std::vector<Token>
+    {
+        { .type = Token::Type::Function, .lexeme = "f(x)" },
+        { .type = Token::Type::Equals, .lexeme = "=" },
+        { .type = Token::Type::Number, .lexeme = "5" },
+        { .type = Token::Type::Variable, .lexeme = "x" },
+        { .type = Token::Type::Caret, .lexeme = "^" },
+        { .type = Token::Type::Number, .lexeme = "2" },
+        { .type = Token::Type::Minus, .lexeme = "-" },
+        { .type = Token::Type::Number, .lexeme = "6" },
+        { .type = Token::Type::Variable, .lexeme = "x" },
+        { .type = Token::Type::Caret, .lexeme = "^" },
+        { .type = Token::Type::Number, .lexeme = "3" },
+        { .type = Token::Type::Plus, .lexeme = "+" },
+        { .type = Token::Type::Number, .lexeme = "4" },
+        { .type = Token::Type::Variable, .lexeme = "x" },
+        { .type = Token::Type::Caret, .lexeme = "^" },
+        { .type = Token::Type::Number, .lexeme = "2" },
+    };
+
+    auto mono = Parse(source);
+
+    // canonicalization will have summed the two x^2 terms and added implicit, unused
+    // 0*x^0 and 0*x^1 terms
+    ASSERT_EQ(mono.size(), 4);
+
+    ASSERT_EQ(mono[0].Coefficient(), 0);
+    ASSERT_EQ(mono[0].Exponent(), 0);
+    ASSERT_EQ(mono[1].Coefficient(), 0);
+    ASSERT_EQ(mono[1].Exponent(), 1);
+    ASSERT_EQ(mono[2].Coefficient(), 9);
+    ASSERT_EQ(mono[2].Exponent(), 2);
+    ASSERT_EQ(mono[3].Coefficient(), -6);
+    ASSERT_EQ(mono[3].Exponent(), 3);
 }
