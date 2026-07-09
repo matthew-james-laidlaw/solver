@@ -21,8 +21,7 @@ private:
 
     Result(bool ok, std::optional<T> value, State rest, std::string message)
         : m_ok(ok), m_value(value), m_rest(rest), m_message(message)
-    {
-    }
+    {}
 
 public:
 

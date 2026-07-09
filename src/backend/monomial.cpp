@@ -5,8 +5,7 @@ namespace solver
 
 Monomial::Monomial(int coefficient, int exponent)
     : m_coefficient(coefficient), m_exponent(exponent)
-{
-}
+{}
 
 auto Monomial::Constant(int coefficient) -> Monomial
 {
