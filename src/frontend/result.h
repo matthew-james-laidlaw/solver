@@ -8,7 +8,7 @@
 namespace solver
 {
 /** @brief The outcome of running a parser. On success, holds a value and the remaining
- *         state. On failure, holds the remaining state and an error message.
+ * state. On failure, holds the remaining state and an error message.
  */
 template <typename T> class Result
 {

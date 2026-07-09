@@ -3,7 +3,9 @@
 namespace solver
 {
 
-State::State(std::span<Token const> source) : m_source(source) {}
+State::State(std::span<Token const> source)
+    : m_source(source)
+{}
 
 auto State::Done() const -> bool
 {

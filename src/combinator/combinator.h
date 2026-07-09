@@ -12,9 +12,8 @@
 namespace solver
 {
 
-/** @brief Any callable that returns a Result given an input State. The combinator
- *         system composes parsers responsible for portions of a grammar to parse the
- *         full grammar.
+/** @brief Any callable that returns a Result given an input State. The combinator system
+ * composes parsers responsible for portions of a grammar to parse the full grammar.
  */
 template <typename T> class Parser
 {
@@ -25,7 +24,9 @@ private:
 
 public:
 
-    Parser(Fn fn) : m_fn(std::move(fn)) {}
+    Parser(Fn fn)
+        : m_fn(std::move(fn))
+    {}
 
     auto operator()(State state) const -> Result<T>
     {
@@ -52,8 +53,8 @@ public:
     }
 };
 
-/** @brief Parser that attempts the given predicate on the next element in the
- * state. Advances the state on success, otherwise returns an error message.
+/** @brief Parser that attempts the given predicate on the next element in the state.
+ * Advances the state on success, otherwise returns an error message.
  */
 template <typename Predicate> auto Satisfy(Predicate predicate) -> Parser<Token>
 {
@@ -87,8 +88,8 @@ template <typename T> auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
         });
 }
 
-/** @brief "Many" parser that attempts the given parser indefinitely until it
- * fails. Allows for no matches.
+/** @brief "Many" parser that attempts the given parser indefinitely until it fails.
+ * Allows for no matches.
  */
 template <typename T> auto operator*(Parser<T> parser) -> Parser<std::vector<T>>
 {
@@ -107,8 +108,7 @@ template <typename T> auto operator*(Parser<T> parser) -> Parser<std::vector<T>>
         });
 }
 
-/** @brief "Fold right" parser that matches two parsers, ignoring the result of
- * the first.
+/** @brief "Fold right" parser that matches two parsers, ignoring the result of the first.
  */
 template <typename A, typename B> auto operator>>(Parser<A> a, Parser<B> b) -> Parser<B>
 {
