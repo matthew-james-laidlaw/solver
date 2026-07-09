@@ -3,7 +3,6 @@
 #include <frontend/token.h>
 
 #include <span>
-#include <vector>
 
 namespace solver
 {

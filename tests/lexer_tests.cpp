@@ -1,6 +1,11 @@
 #include <gtest/gtest.h>
 
 #include <frontend/lexer.h>
+#include <frontend/token.h>
+
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 using namespace std::string_literals;
 using namespace solver;

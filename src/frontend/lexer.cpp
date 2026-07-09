@@ -1,5 +1,7 @@
 #include <frontend/lexer.h>
+#include <frontend/token.h>
 
+#include <cstddef>
 #include <stdexcept>
 #include <string_view>
 

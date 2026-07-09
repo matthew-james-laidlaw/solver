@@ -1,6 +1,14 @@
 #include <gtest/gtest.h>
 
 #include <combinator/combinator.h>
+#include <frontend/result.h>
+#include <frontend/state.h>
+#include <frontend/token.h>
+
+#include <optional>
+#include <span>
+#include <string>
+#include <vector>
 
 using namespace solver;
 using Type = Token::Type;

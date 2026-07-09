@@ -1,9 +1,16 @@
 #include <gtest/gtest.h>
 
+#include <backend/monomial.h>
+#include <combinator/combinator.h>
 #include <frontend/grammar.h>
 #include <frontend/parser.h>
+#include <frontend/result.h>
 #include <frontend/state.h>
 #include <frontend/token.h>
+
+#include <span>
+#include <string>
+#include <vector>
 
 using namespace solver;
 

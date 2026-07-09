@@ -1,4 +1,5 @@
 #include <frontend/state.h>
+#include <frontend/token.h>
 
 namespace solver
 {

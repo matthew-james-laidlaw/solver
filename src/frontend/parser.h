@@ -1,12 +1,14 @@
 #pragma once
 
 #include <backend/monomial.h>
-#include <frontend/token.h>
 
+#include <string>
 #include <vector>
 
 namespace solver
 {
+
+struct Token;
 
 /** @brief Parses an equation from an already-tokenized source.
  */

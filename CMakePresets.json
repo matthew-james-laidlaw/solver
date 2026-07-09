@@ -1,0 +1,12 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "iwyu",
+            "binaryDir": "build",
+            "cacheVariables": {
+                "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
+            }
+        }
+    ]
+}
