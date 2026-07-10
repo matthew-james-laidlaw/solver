@@ -14,9 +14,16 @@ private:
 
 public:
 
+    /** @brief Construct a constant monomial of form cx^0.
+     */
     static auto Constant(int coefficient) -> Monomial;
+
+    /** @brief Construct a monomial with form x^n.
+     */
     static auto Variable(int exponent = 1) -> Monomial;
 
+    /** @brief Construct a monomial with both its coefficient and exponent.
+     */
     Monomial(int coefficient, int exponent);
 
     auto Coefficient() const -> int;
