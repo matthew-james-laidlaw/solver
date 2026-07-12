@@ -37,7 +37,7 @@ public:
     template <typename F>
     auto Map(F mapper) const
     {
-        using U = std::invoke_result_t<F, T const&>;
+        using U = std::invoke_result_t<F, const T&>;
 
         auto fn = m_fn;
 
@@ -135,7 +135,7 @@ auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
     return Parser<T>(
         [=](State state) -> Result<T>
         {
-            for (auto const& parser : {a, b}) {
+            for (const auto& parser : {a, b}) {
                 auto result = parser(state);
                 if (result.Succeeded()) {
                     return result;

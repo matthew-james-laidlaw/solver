@@ -14,11 +14,11 @@ class State
 {
 private:
 
-    std::span<Token const> m_source;
+    std::span<const Token> m_source;
 
 public:
 
-    State(std::span<Token const> source);
+    State(std::span<const Token> source);
 
     auto Done() const -> bool;
     auto Peek() const -> Token;

@@ -12,10 +12,10 @@ struct Token;
 
 /** @brief Parses an equation from an already-tokenized source.
  */
-auto Parse(std::vector<Token> const& source) -> std::vector<Monomial>;
+auto Parse(const std::vector<Token>& source) -> std::vector<Monomial>;
 
 /** @brief Parses an equation directly from a source string.
  */
-auto Parse(std::string const& source) -> std::vector<Monomial>;
+auto Parse(const std::string& source) -> std::vector<Monomial>;
 
 } // namespace solver

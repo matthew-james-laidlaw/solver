@@ -41,7 +41,7 @@ public:
         return m_ok;
     }
 
-    auto Value() const -> T const&
+    auto Value() const -> const T&
     {
         return *m_value;
     }
@@ -56,7 +56,7 @@ public:
         return m_rest;
     }
 
-    auto Message() const -> std::string const&
+    auto Message() const -> const std::string&
     {
         return m_message;
     }

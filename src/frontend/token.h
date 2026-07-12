@@ -23,6 +23,6 @@ struct Token
     std::string lexeme;
 };
 
-auto operator==(Token const& lhs, Token const& rhs) -> bool;
+auto operator==(const Token& lhs, const Token& rhs) -> bool;
 
 } // namespace solver

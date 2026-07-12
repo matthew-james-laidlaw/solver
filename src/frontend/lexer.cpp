@@ -12,7 +12,7 @@ namespace solver
 
 auto TrimWhitespace(std::string_view& state) -> void
 {
-    auto const next_non_whitespace = state.find_first_not_of(" \t\n\r\f\v");
+    const auto next_non_whitespace = state.find_first_not_of(" \t\n\r\f\v");
     size_t prefix = (next_non_whitespace == std::string_view::npos ? state.size()
                                                                    : next_non_whitespace);
     state.remove_prefix(prefix);
@@ -96,7 +96,7 @@ auto LexVariable(std::string_view& state) -> Token
     return result;
 }
 
-auto Lex(std::string const& source) -> std::vector<Token>
+auto Lex(const std::string& source) -> std::vector<Token>
 {
     auto state = std::string_view(source);
     auto tokens = std::vector<Token>{};

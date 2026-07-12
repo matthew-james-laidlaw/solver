@@ -34,9 +34,9 @@ auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
     return polynomial;
 }
 
-auto Parse(std::vector<Token> const& source) -> std::vector<Monomial>
+auto Parse(const std::vector<Token>& source) -> std::vector<Monomial>
 {
-    std::span<Token const> state(source);
+    std::span<const Token> state(source);
     auto result = EquationParser(state);
     if (!result.Succeeded()) {
         return {};
@@ -44,7 +44,7 @@ auto Parse(std::vector<Token> const& source) -> std::vector<Monomial>
     return Canonicalize(result.Value());
 }
 
-auto Parse(std::string const& source) -> std::vector<Monomial>
+auto Parse(const std::string& source) -> std::vector<Monomial>
 {
     auto lexed = Lex(source);
     return Parse(lexed);

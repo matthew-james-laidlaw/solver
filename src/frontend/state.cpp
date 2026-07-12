@@ -4,7 +4,7 @@
 namespace solver
 {
 
-State::State(std::span<Token const> source)
+State::State(std::span<const Token> source)
     : m_source(source)
 {}
 
