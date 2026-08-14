@@ -19,9 +19,21 @@ auto main(int argc, char** argv) -> int
 
     CLI11_PARSE(app, argc, argv);
 
+    std::cout << "Solving for: " << function << '\n';
+
     try {
         auto tokens = solver::Parse(function);
-        auto solution = solver::Solve(tokens);
+        auto solutions = solver::Solve(tokens);
+
+        if (solutions.empty()) {
+            std::cout << "There are no solutions!" << '\n';
+        }
+        else {
+            std::cout << "Solutions:" << '\n';
+            for (auto solution : solutions) {
+                std::cout << solution << '\n';
+            }
+        }
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
