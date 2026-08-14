@@ -103,6 +103,9 @@ auto Lex(const std::string& source) -> std::vector<Token>
 
     while (!state.empty()) {
         TrimLeadingWhitespace(state);
+        if (state.empty()) {
+            break;
+        }
 
         if (state.starts_with("f(x)")) {
             tokens.push_back(LexFunction(state));

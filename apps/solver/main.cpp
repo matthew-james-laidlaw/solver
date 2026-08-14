@@ -19,7 +19,7 @@ auto main(int argc, char** argv) -> int
 
     CLI11_PARSE(app, argc, argv);
 
-    std::cout << "Solving for: " << function << '\n';
+    std::cout << std::format("Solving for: '{}'", function) << '\n';
 
     try {
         auto tokens = solver::Parse(function);
