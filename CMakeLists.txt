@@ -1,48 +1,30 @@
 cmake_minimum_required(VERSION 4.2.1)
-project(SOLVER LANGUAGES CXX)
+
+project(
+    "SOLVER"
+    VERSION "0.1.0"
+    LANGUAGES "CXX"
+)
 
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
-include(FetchContent)
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG v1.17.0
-)
-FetchContent_MakeAvailable(googletest)
+option(SOLVER_BUILD_TESTS "Build this project's unit tests" ON)
 
-# --- Compiler Options ---
-if(WIN32)
-    add_compile_options(/W4 /WX)
-else()
-    add_compile_options(-Wall -Wextra -pedantic -Werror)
-endif()
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+include(cpm_modules)
 
-# --- Libraries ---
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 
-add_library(parser
-    src/backend/monomial.cpp
-    src/backend/solver.cpp
-    src/frontend/lexer.cpp
-    src/frontend/parser.cpp
-    src/frontend/state.cpp
-    src/frontend/token.cpp
-)
-target_include_directories(parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-# --- Testing ---
+# --- external dependencies ---
+cpm_add_cli11()
+cpm_add_googletest()
+cpm_add_spdlog()
 
 enable_testing()
 include(GoogleTest)
 
-add_executable(unit_tests
-    tests/combinator_tests.cpp
-    tests/lexer_tests.cpp
-    tests/parser_tests.cpp
-    tests/solver_tests.cpp
-)
-
-target_link_libraries(unit_tests parser gtest_main)
-gtest_discover_tests(unit_tests)
+# --- source code ---
+add_subdirectory(libs)
+add_subdirectory(apps)

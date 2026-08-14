@@ -2,17 +2,11 @@
     "version": 6,
     "configurePresets": [
         {
-            "name": "gnu",
-            "binaryDir": "build",
-            "generator": "Ninja Multi-Config",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_CXX_COMPILER": "g++"
-            }
+            "name": "base",
+            "binaryDir": "build"
         },
         {
             "name": "iwyu",
-            "binaryDir": "build",
             "cacheVariables": {
                 "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
             }
