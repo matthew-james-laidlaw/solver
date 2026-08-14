@@ -12,6 +12,9 @@
 namespace solver
 {
 
+/** @brief Sort and combine terms into a single list of monomials
+ * who's size is the order of the polynomial.
+ */
 auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
 {
     int order = 0;

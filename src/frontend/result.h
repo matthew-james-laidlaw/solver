@@ -7,6 +7,7 @@
 
 namespace solver
 {
+
 /** @brief The outcome of running a parser. On success, holds a value and the remaining
  * state. On failure, holds the remaining state and an error message.
  */
@@ -26,11 +27,15 @@ private:
 
 public:
 
+    /** @brief Named constructor for a successful result
+     */
     static auto Success(T value, State rest) -> Result
     {
         return Result(true, std::move(value), rest, "");
     }
 
+    /** @brief Named constructor for a failed result
+     */
     static auto Failure(State rest, std::string message) -> Result
     {
         return Result(false, std::nullopt, rest, message);

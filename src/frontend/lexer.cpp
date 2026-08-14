@@ -10,7 +10,7 @@ using namespace std::string_literals;
 namespace solver
 {
 
-auto TrimWhitespace(std::string_view& state) -> void
+auto TrimLeadingWhitespace(std::string_view& state) -> void
 {
     const auto next_non_whitespace = state.find_first_not_of(" \t\n\r\f\v");
     size_t prefix = (next_non_whitespace == std::string_view::npos ? state.size()
@@ -102,7 +102,7 @@ auto Lex(const std::string& source) -> std::vector<Token>
     auto tokens = std::vector<Token>{};
 
     while (!state.empty()) {
-        TrimWhitespace(state);
+        TrimLeadingWhitespace(state);
 
         if (state.starts_with("f(x)")) {
             tokens.push_back(LexFunction(state));
