@@ -1,4 +1,4 @@
-#include <backend/monomial.h>
+#include <backend/polynomial.h>
 #include <combinator/combinator.h>
 #include <frontend/grammar.h>
 #include <frontend/lexer.h>
@@ -12,26 +12,6 @@
 
 namespace solver
 {
-
-/** @brief Sort and combine terms into a single list of monomials
- * who's size is the order of the polynomial.
- */
-auto Canonicalize(std::vector<Monomial> monomials) -> Polynomial
-{
-    int order = 0;
-    for (auto term : monomials) {
-        order = std::max(order, term.Exponent());
-    }
-
-    Polynomial polynomial(order + 1, 0);
-    for (auto term : monomials) {
-        if (term.Exponent() >= 0) {
-            polynomial[term.Exponent()] += term.Coefficient();
-        }
-    }
-
-    return polynomial;
-}
 
 auto Parse(const std::vector<Token>& source) -> Polynomial
 {

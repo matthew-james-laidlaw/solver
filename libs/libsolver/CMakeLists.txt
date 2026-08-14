@@ -1,6 +1,7 @@
 cpm_add_component(libsolver
     SOURCES
         src/backend/monomial.cpp
+        src/backend/polynomial.cpp
         src/backend/solver.cpp
         src/frontend/lexer.cpp
         src/frontend/parser.cpp

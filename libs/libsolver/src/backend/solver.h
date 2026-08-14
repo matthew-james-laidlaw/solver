@@ -1,6 +1,6 @@
 #pragma once
 
-#include <backend/monomial.h>
+#include <backend/polynomial.h>
 
 #include <complex>
 
