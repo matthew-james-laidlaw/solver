@@ -3,6 +3,7 @@
 #include <frontend/result.h>
 #include <frontend/state.h>
 
+#include <format>
 #include <functional>
 #include <optional>
 #include <tuple>
@@ -47,7 +48,7 @@ public:
                 auto result = fn(state);
 
                 if (!result.Succeeded()) {
-                    return Result<U>::Failure(state, "parser failure (map)");
+                    return Result<U>::Failure(state, result.Message());
                 }
 
                 return Result<U>::Success(mapper(result.Value()), result.Rest());
@@ -65,14 +66,39 @@ auto Satisfy(Predicate predicate) -> Parser<Token>
         [=](State state) -> Result<Token>
         {
             if (state.Done()) {
-                return Result<Token>::Failure(state, "unexpected end of input");
+                return Result<Token>::Failure(state,
+                                              "parser error: unexpected end of input");
             }
 
-            if (!predicate(state.Peek().type)) {
-                return Result<Token>::Failure(state, "unexpected token");
+            auto current = state.Peek();
+            if (!predicate(current.type)) {
+                return Result<Token>::Failure(state, "parser error: unexpected token");
             }
 
-            return Result<Token>::Success(state.Peek(), state.Advance());
+            return Result<Token>::Success(current, state.Advance());
+        });
+}
+
+inline auto Expect(Token::Type type, std::string_view what) -> Parser<Token>
+{
+    return Parser<Token>(
+        [=](State state) -> Result<Token>
+        {
+            if (state.Done()) {
+                return Result<Token>::Failure(
+                    state,
+                    std::format("parser error: unexpected end of input, expected {}",
+                                what));
+            }
+
+            auto current = state.Peek();
+            if (current.type != type) {
+                return Result<Token>::Failure(
+                    state, std::format("parser error: expected {}, got '{}'", what,
+                                       current.lexeme));
+            }
+
+            return Result<Token>::Success(current, state.Advance());
         });
 }
 
@@ -126,8 +152,8 @@ auto operator>>(Parser<A> a, Parser<B> b) -> Parser<B>
         });
 }
 
-/** @brief "Choice" parser that attempts each of the given parsers in sequences
- * until one of them passes. Fails if none of the parsers succeed.
+/** @brief "Choice" parser that attempts both parsers returning the first to succeed.
+ * Fails if neither parser succeeds.
  */
 template <typename T>
 auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
@@ -135,13 +161,19 @@ auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
     return Parser<T>(
         [=](State state) -> Result<T>
         {
-            for (const auto& parser : {a, b}) {
-                auto result = parser(state);
-                if (result.Succeeded()) {
-                    return result;
-                }
+            auto first = a(state);
+            if (first.Succeeded()) {
+                return first;
             }
-            return Result<T>::Failure(state, "parser failure (choice)");
+
+            auto second = b(state);
+            if (second.Succeeded()) {
+                return second;
+            }
+
+            return Result<T>::Failure(state,
+                                      std::format("expected one of: [{} | {}]",
+                                                  first.Message(), second.Message()));
         });
 }
 
@@ -158,12 +190,12 @@ auto operator&(Parser<A> a, Parser<B> b) -> Parser<std::tuple<A, B>>
         {
             auto result_a = a(state);
             if (!result_a.Succeeded()) {
-                return Result<R>::Failure(state, "parser failure (combine)");
+                return Result<R>::Failure(state, result_a.Message());
             }
 
             auto result_b = b(result_a.Rest());
             if (!result_b.Succeeded()) {
-                return Result<R>::Failure(state, "parser failure (combine)");
+                return Result<R>::Failure(state, result_b.Message());
             }
 
             return Result<R>::Success({result_a.Value(), result_b.Value()},

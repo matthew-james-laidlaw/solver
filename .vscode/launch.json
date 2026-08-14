@@ -4,9 +4,13 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
+            "console": "integratedTerminal",
             "program": "${command:cmake.launchTargetPath}",
             "cwd": "${workspaceFolder}",
-            "args": [],
+            "args": [
+                "--function",
+                "f(x) ="
+            ],
         },
         {
             "name": "(Linux) Launch",

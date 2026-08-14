@@ -18,7 +18,7 @@ function(cpm_add_component component_name)
         target_link_libraries(${lib_target} PUBLIC ${ARG_DEPENDENCIES})
     endif()
 
-    if (CPM_BUILD_TESTS AND ARG_TEST_SOURCES)
+    if (SOLVER_BUILD_TESTS AND ARG_TEST_SOURCES)
         add_executable(${test_target} ${ARG_TEST_SOURCES})
         target_link_libraries(${test_target} ${lib_target} GTest::gtest_main)
         gtest_discover_tests(${test_target})

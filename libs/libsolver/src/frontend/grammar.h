@@ -16,15 +16,15 @@ namespace solver
  |     Parser Primitives     |
  * ------------------------- */
 
-inline auto Variable = Satisfy([](Token::Type t) { return t == Token::Type::Variable; });
-inline auto Caret    = Satisfy([](Token::Type t) { return t == Token::Type::Caret; });
-inline auto Plus     = Satisfy([](Token::Type t) { return t == Token::Type::Plus; });
-inline auto Minus    = Satisfy([](Token::Type t) { return t == Token::Type::Minus; });
-inline auto Function = Satisfy([](Token::Type t) { return t == Token::Type::Function; });
-inline auto Equals   = Satisfy([](Token::Type t) { return t == Token::Type::Equals; });
+inline auto Variable = Expect(Token::Type::Variable, "a variable");
+inline auto Caret    = Expect(Token::Type::Caret, "'^'");
+inline auto Plus     = Expect(Token::Type::Plus, "'+'");
+inline auto Minus    = Expect(Token::Type::Minus, "'-'");
+inline auto Function = Expect(Token::Type::Function, "'f(x)'");
+inline auto Equals   = Expect(Token::Type::Equals, "'='");
 
 inline auto ToInt = [](Token token) -> int { return std::stoi(token.lexeme); };
-inline auto Number = Satisfy([](Token::Type t){ return t == Token::Type::Number; }).Map(ToInt);
+inline auto Number = Expect(Token::Type::Number, "a number").Map(ToInt);
 
 /* --------------------- *
  |     Grammar Rules     |
@@ -79,11 +79,8 @@ inline auto UnaryParser =
  * 
  *         ( "+" | "-" ) unary
  * 
- *         Given a '+', simply passes through the parsed monomial. Given a '-', negates
- *         the parsed monomial.
- * 
- *         This rule does not exist in the grammar but is a subset of the expression
- *         parsing rule:
+ *         This rule does not explicitly exist in the grammar but is a subset of the
+ *         expression parsing rule:
  * 
  *         expression ::= unary { ( "+" | "-" ) unary }
  */

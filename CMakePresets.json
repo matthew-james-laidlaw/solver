@@ -3,13 +3,33 @@
     "configurePresets": [
         {
             "name": "base",
-            "binaryDir": "build"
+            "binaryDir": "build",
+            "cacheVariables": {
+                "SOLVER_BUILD_TESTS": "ON"
+            }
         },
         {
             "name": "iwyu",
             "cacheVariables": {
                 "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
             }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "base",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "configurePreset": "base",
+            "configuration": "Release"
+        },
+        {
+            "name": "reldeb",
+            "configurePreset": "base",
+            "configuration": "RelWithDebInfo"
         }
     ]
 }

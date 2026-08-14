@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <span>
+#include <stdexcept>
 
 namespace solver
 {
@@ -15,39 +16,34 @@ namespace solver
 /** @brief Sort and combine terms into a single list of monomials
  * who's size is the order of the polynomial.
  */
-auto Canonicalize(std::vector<Monomial> monomials) -> std::vector<Monomial>
+auto Canonicalize(std::vector<Monomial> monomials) -> Polynomial
 {
     int order = 0;
     for (auto term : monomials) {
         order = std::max(order, term.Exponent());
     }
 
-    std::vector<Monomial> polynomial(order + 1, Monomial(0, 0));
-    for (int i = 0; i < (int)polynomial.size(); ++i) {
-        polynomial[i] = Monomial(0, i);
-    }
-
+    Polynomial polynomial(order + 1, 0);
     for (auto term : monomials) {
-        if (term.Exponent() < 0) {
-            return {};
+        if (term.Exponent() >= 0) {
+            polynomial[term.Exponent()] += term.Coefficient();
         }
-        polynomial[term.Exponent()] = polynomial[term.Exponent()] + term.Coefficient();
     }
 
     return polynomial;
 }
 
-auto Parse(const std::vector<Token>& source) -> std::vector<Monomial>
+auto Parse(const std::vector<Token>& source) -> Polynomial
 {
     std::span<const Token> state(source);
     auto result = EquationParser(state);
     if (!result.Succeeded()) {
-        return {};
+        throw std::runtime_error(result.Message());
     }
     return Canonicalize(result.Value());
 }
 
-auto Parse(const std::string& source) -> std::vector<Monomial>
+auto Parse(const std::string& source) -> Polynomial
 {
     auto lexed = Lex(source);
     return Parse(lexed);

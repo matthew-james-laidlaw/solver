@@ -277,12 +277,8 @@ TEST(ParserTests, parse_polynomial)
     // 0*x^0 and 0*x^1 terms
     ASSERT_EQ(mono.size(), 4);
 
-    ASSERT_EQ(mono[0].Coefficient(), 0);
-    ASSERT_EQ(mono[0].Exponent(), 0);
-    ASSERT_EQ(mono[1].Coefficient(), 0);
-    ASSERT_EQ(mono[1].Exponent(), 1);
-    ASSERT_EQ(mono[2].Coefficient(), 9);
-    ASSERT_EQ(mono[2].Exponent(), 2);
-    ASSERT_EQ(mono[3].Coefficient(), -6);
-    ASSERT_EQ(mono[3].Exponent(), 3);
+    ASSERT_EQ(mono[0], 0);
+    ASSERT_EQ(mono[1], 0);
+    ASSERT_EQ(mono[2], 9);
+    ASSERT_EQ(mono[3], -6);
 }
