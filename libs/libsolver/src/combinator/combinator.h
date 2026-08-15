@@ -1,3 +1,5 @@
+// clang-format off
+
 #pragma once
 
 #include <frontend/result.h>
@@ -6,6 +8,7 @@
 #include <format>
 #include <functional>
 #include <optional>
+#include <string>
 #include <tuple>
 #include <type_traits>
 #include <vector>
@@ -21,80 +24,72 @@ class Parser
 {
 private:
 
-    using Fn = std::function<Result<T>(State)>;
-    Fn m_fn;
+    std::string m_name;
+
+    using ParseFn = std::function<Result<T>(State)>;
+    ParseFn m_parse_fn;
 
 public:
 
-    Parser(Fn fn)
-        : m_fn(std::move(fn))
+    Parser(std::string name, ParseFn fn)
+        : m_name(name), m_parse_fn(std::move(fn))
     {}
 
     auto operator()(State state) const -> Result<T>
     {
-        return m_fn(state);
+        return m_parse_fn(state);
     }
 
-    template <typename F>
-    auto Map(F mapper) const
+    auto Name() const -> std::string
     {
-        using U = std::invoke_result_t<F, const T&>;
+        return m_name;
+    }
 
-        auto fn = m_fn;
+    template <typename MapFn>
+    auto Map(MapFn map_fn) const
+    {
+        using U = std::invoke_result_t<MapFn, const T&>;
 
-        return Parser<U>(
-            [mapper, fn](State state) -> Result<U>
-            {
-                auto result = fn(state);
+        auto parse_fn = m_parse_fn;
 
-                if (!result.Succeeded()) {
-                    return Result<U>::Failure(state, result.Message());
-                }
-
-                return Result<U>::Success(mapper(result.Value()), result.Rest());
-            });
+        return Parser<U>("mapfn",
+                         [map_fn, parse_fn](State state) -> Result<U>
+                         {
+                             try {
+                                 auto result = parse_fn(state);
+                                 if (!result.Succeeded()) {
+                                     return Result<U>::Failure(state, result.Message());
+                                 }
+                                 return Result<U>::Success(map_fn(result.Value()),
+                                                           result.Rest());
+                             }
+                             catch (...) {
+                                 return Result<U>::Failure(state, "map fn failed");
+                             }
+                         });
     }
 };
 
-/** @brief Parser that attempts the given predicate on the next element in the state.
- * Advances the state on success, otherwise returns an error message.
+/** @brief Parser that attempts to match the given token type on the next element in the
+ * state. Advances the state on success, otherwise returns an error message.
  */
-template <typename Predicate>
-auto Satisfy(Predicate predicate) -> Parser<Token>
-{
-    return Parser<Token>(
-        [=](State state) -> Result<Token>
-        {
-            if (state.Done()) {
-                return Result<Token>::Failure(state,
-                                              "parser error: unexpected end of input");
-            }
-
-            auto current = state.Peek();
-            if (!predicate(current.type)) {
-                return Result<Token>::Failure(state, "parser error: unexpected token");
-            }
-
-            return Result<Token>::Success(current, state.Advance());
-        });
-}
-
 inline auto Expect(Token::Type type, std::string_view what) -> Parser<Token>
 {
     return Parser<Token>(
+        std::string(what),
         [=](State state) -> Result<Token>
         {
             if (state.Done()) {
                 return Result<Token>::Failure(
                     state,
-                    std::format("parser error: unexpected end of input, expected {}",
+                    std::format("parser error: unexpected end of input, expected '{}'",
                                 what));
             }
 
             auto current = state.Peek();
             if (current.type != type) {
                 return Result<Token>::Failure(
-                    state, std::format("parser error: expected {}, got '{}'", what,
+                    state, std::format("parser error: expected '{}', got '{}'", what,
                                        current.lexeme));
             }
 
@@ -108,6 +103,7 @@ template <typename T>
 auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
 {
     return Parser<std::optional<T>>(
+        "maybe",
         [=](State state) -> Result<std::optional<T>>
         {
             auto result = parser(state);
@@ -125,6 +121,7 @@ template <typename T>
 auto operator*(Parser<T> parser) -> Parser<std::vector<T>>
 {
     return Parser<std::vector<T>>(
+        "operator*",
         [=](State state) -> Result<std::vector<T>>
         {
             std::vector<T> values;
@@ -158,23 +155,23 @@ auto operator>>(Parser<A> a, Parser<B> b) -> Parser<B>
 template <typename T>
 auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
 {
-    return Parser<T>(
-        [=](State state) -> Result<T>
-        {
-            auto first = a(state);
-            if (first.Succeeded()) {
-                return first;
-            }
+    return Parser<T>("operator|",
+                     [=](State state) -> Result<T>
+                     {
+                         auto first = a(state);
+                         if (first.Succeeded()) {
+                             return first;
+                         }
 
-            auto second = b(state);
-            if (second.Succeeded()) {
-                return second;
-            }
+                         auto second = b(state);
+                         if (second.Succeeded()) {
+                             return second;
+                         }
 
-            return Result<T>::Failure(state,
-                                      std::format("expected one of: [{} | {}]",
-                                                  first.Message(), second.Message()));
-        });
+                         return Result<T>::Failure(
+                             state, std::format("expected one of: ['{}' | '{}'], got neither",
+                                                a.Name(), b.Name()));
+                     });
 }
 
 /** @brief "Combine" parser that runs two parsers in sequence, then folds both
@@ -185,22 +182,24 @@ auto operator&(Parser<A> a, Parser<B> b) -> Parser<std::tuple<A, B>>
 {
     using R = std::tuple<A, B>;
 
-    return Parser<R>(
-        [=](State state) -> Result<R>
-        {
-            auto result_a = a(state);
-            if (!result_a.Succeeded()) {
-                return Result<R>::Failure(state, result_a.Message());
-            }
+    return Parser<R>("operator&",
+                     [=](State state) -> Result<R>
+                     {
+                         auto result_a = a(state);
+                         if (!result_a.Succeeded()) {
+                             return Result<R>::Failure(state, result_a.Message());
+                         }
 
-            auto result_b = b(result_a.Rest());
-            if (!result_b.Succeeded()) {
-                return Result<R>::Failure(state, result_b.Message());
-            }
+                         auto result_b = b(result_a.Rest());
+                         if (!result_b.Succeeded()) {
+                             return Result<R>::Failure(state, result_b.Message());
+                         }
 
-            return Result<R>::Success({result_a.Value(), result_b.Value()},
-                                      result_b.Rest());
-        });
+                         return Result<R>::Success({result_a.Value(), result_b.Value()},
+                                                   result_b.Rest());
+                     });
 }
 
 } // namespace solver
+
+// clang-format on

@@ -252,6 +252,7 @@ TEST(ParserTests, parse_expression_minus)
 
 TEST(ParserTests, parse_polynomial)
 {
+    // f(x) = 5x^2 - 6x^3 + 4x^2
     auto source = std::vector<Token>{
         {.type = Token::Type::Function, .lexeme = "f(x)"},
         {.type = Token::Type::Equals, .lexeme = "="},
@@ -271,14 +272,13 @@ TEST(ParserTests, parse_polynomial)
         {.type = Token::Type::Number, .lexeme = "2"},
     };
 
-    auto mono = Parse(source);
+    auto polynomial = Parse(source);
 
-    // canonicalization will have summed the two x^2 terms and added implicit, unused
-    // 0*x^0 and 0*x^1 terms
-    ASSERT_EQ(mono.size(), 4);
-
-    ASSERT_EQ(mono[0], 0);
-    ASSERT_EQ(mono[1], 0);
-    ASSERT_EQ(mono[2], 9);
-    ASSERT_EQ(mono[3], -6);
+    // polynomial creation will have sorted and combined like terms and added 0 terms for
+    // powers of 0 and 1.
+    ASSERT_EQ(polynomial.Order(), 4);
+    ASSERT_EQ(polynomial[0], 0);
+    ASSERT_EQ(polynomial[1], 0);
+    ASSERT_EQ(polynomial[2], 9);
+    ASSERT_EQ(polynomial[3], -6);
 }

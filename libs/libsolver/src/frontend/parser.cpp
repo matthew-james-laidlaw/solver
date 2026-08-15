@@ -20,7 +20,7 @@ auto Parse(const std::vector<Token>& source) -> Polynomial
     if (!result.Succeeded()) {
         throw std::runtime_error(result.Message());
     }
-    return Canonicalize(result.Value());
+    return Polynomial(result.Value());
 }
 
 auto Parse(const std::string& source) -> Polynomial

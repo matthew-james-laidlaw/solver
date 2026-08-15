@@ -10,6 +10,7 @@
         },
         {
             "name": "iwyu",
+            "inherits": "base",
             "cacheVariables": {
                 "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
             }

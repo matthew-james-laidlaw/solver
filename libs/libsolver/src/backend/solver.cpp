@@ -10,7 +10,7 @@ namespace solver
 
 auto SolveFirstOrder(const Polynomial& equation) -> Solution
 {
-    if (equation.size() != 2) {
+    if (equation.Order() != 2) {
         throw std::runtime_error("expected a first order polynomial");
     }
     auto a = (double)equation[1];
@@ -20,7 +20,7 @@ auto SolveFirstOrder(const Polynomial& equation) -> Solution
 
 auto SolveSecondOrder(const Polynomial& equation) -> Solution
 {
-    if (equation.size() != 3) {
+    if (equation.Order() != 3) {
         throw std::runtime_error("expected a second order polynomial");
     }
 
@@ -39,7 +39,7 @@ auto SolveSecondOrder(const Polynomial& equation) -> Solution
 
 auto SolveThirdOrder(const Polynomial& equation) -> Solution
 {
-    if (equation.size() != 4) {
+    if (equation.Order() != 4) {
         throw std::runtime_error("expected a third order polynomial");
     }
 
@@ -63,9 +63,9 @@ auto SolveThirdOrder(const Polynomial& equation) -> Solution
         return {root, root, root};
     }
     else {
-        C = cube_root(delta_1 + std::sqrt(delta_1_2 - 3.0 * delta_0_3));
+        C = cube_root((delta_1 + std::sqrt(delta_1_2 - 4.0 * delta_0_3)) / 2.0);
         if (C == 0.0) {
-            C = cube_root(delta_1 - std::sqrt(delta_1_2 - 3.0 * delta_0_3));
+            C = cube_root((delta_1 - std::sqrt(delta_1_2 - 4.0 * delta_0_3)) / 2.0);
         }
     }
 
@@ -82,7 +82,7 @@ auto SolveThirdOrder(const Polynomial& equation) -> Solution
 
 auto SolveFourthOrder(const Polynomial& equation) -> Solution
 {
-    if (equation.size() != 5) {
+    if (equation.Order() != 5) {
         throw std::runtime_error("expected a fourth order polynomial");
     }
     throw std::runtime_error("fourth order solving not implemented");
@@ -90,7 +90,7 @@ auto SolveFourthOrder(const Polynomial& equation) -> Solution
 
 auto Solve(const Polynomial& equation) -> Solution
 {
-    switch (equation.size()) {
+    switch (equation.Order()) {
     case 1:
         return {}; // constant function has no roots
     case 2:

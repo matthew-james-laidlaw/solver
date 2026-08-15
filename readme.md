@@ -10,7 +10,7 @@ See [grammar.md](docs/grammar.md) for the grammar rules.
 
 ## ToDo
 
-* Better error reporting
+* Better parser error reporting
 * Fuzz testing
 * Unit test coverage
 * CI/CD automated tests for various platforms
