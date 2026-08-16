@@ -2,6 +2,7 @@
 #include <backend/solver.h>
 #include <frontend/parser.h>
 
+#include <format>
 #include <iostream>
 #include <string>
 
