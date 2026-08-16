@@ -9,6 +9,16 @@
             }
         },
         {
+            "name": "coverage",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_C_FLAGS": "-fprofile-instr-generate -fcoverage-mapping",
+                "CMAKE_CXX_FLAGS": "-fprofile-instr-generate -fcoverage-mapping"
+            }
+        },
+        {
             "name": "iwyu",
             "inherits": "base",
             "cacheVariables": {
@@ -26,6 +36,11 @@
             "name": "release",
             "configurePreset": "base",
             "configuration": "Release"
+        },
+        {
+            "name": "coverage",
+            "configurePreset": "coverage",
+            "configuration": "Debug"
         }
     ]
 }
