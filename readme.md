@@ -20,7 +20,8 @@ The combinator library consists of parsing primitives and overloaded operators t
 
 ## ToDo
 
-* Better parser error reporting
+* ~~More expressive parser error reporting~~
+* Column numbers in error reporting
 * Fuzz testing
 * Unit test coverage
 * CI/CD automated tests for various platforms
