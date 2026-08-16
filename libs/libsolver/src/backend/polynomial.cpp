@@ -1,5 +1,6 @@
 #include <backend/polynomial.h>
 
+#include <algorithm>
 #include <stdexcept>
 
 namespace solver

@@ -7,6 +7,7 @@ project(
 )
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD REQUIRED)
 
 option(SOLVER_BUILD_TESTS "Build this project's unit tests" ON)
 
