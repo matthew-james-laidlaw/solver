@@ -38,6 +38,9 @@ jobs:
     name: Coverage
     
     steps:
+      - name: Install LLVM
+        run: sudo apt-get update && sudo apt-get install -y llvm
+
       - name: Check out repo
         uses: actions/checkout@v4
 
