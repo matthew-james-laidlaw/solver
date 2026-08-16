@@ -8,13 +8,17 @@ jobs:
       matrix:
         include:
           - os: macos-latest
+            name: MacOS
             generator: Xcode
           - os: ubuntu-latest
+            name: Linux
             generator: Ninja Multi-Config
           - os: windows-latest
+            name: Windows
             generator: Visual Studio 18 2026
     
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}
     
     steps:
       - name: Check out repo
@@ -28,3 +32,29 @@ jobs:
 
       - name: Run tests
         run: ctest --test-dir build -C Release --output-on-failure
+
+  coverage:
+    runs-on: ubuntu-latest
+    name: Coverage
+    
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake --preset coverage -G "Ninja Multi-Config"
+
+      - name: Build CMake
+        run: cmake --build --preset coverage
+
+      - name: Run tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Generate coverage report
+        run: ./scripts/coverage.sh
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: build/coverage
