@@ -3,6 +3,7 @@
 #include <frontend/result.h>
 #include <frontend/state.h>
 
+#include <format>
 #include <functional>
 #include <string>
 
@@ -44,22 +45,25 @@ public:
         using U = std::invoke_result_t<MapFn, const T&>;
 
         auto parse_fn = m_parse_fn;
+        auto parser_name = m_name;
 
-        return Parser<U>("mapfn",
-                         [map_fn, parse_fn](State state) -> Result<U>
-                         {
-                             try {
-                                 auto result = parse_fn(state);
-                                 if (!result.Succeeded()) {
-                                     return Result<U>::Failure(state, result.Message());
-                                 }
-                                 return Result<U>::Success(map_fn(result.Value()),
-                                                           result.Rest());
-                             }
-                             catch (...) {
-                                 return Result<U>::Failure(state, "map fn failed");
-                             }
-                         });
+        return Parser<U>(
+            std::string("map(") + parser_name + ")",
+            [map_fn, parse_fn, parser_name](State state) -> Result<U>
+            {
+                try {
+                    auto result = parse_fn(state);
+                    if (!result.Succeeded()) {
+                        return Result<U>::Failure(result.Rest(), result.Message());
+                    }
+                    return Result<U>::Success(map_fn(result.Value()), result.Rest());
+                }
+                catch (...) {
+                    return Result<U>::Failure(
+                        state,
+                        std::format("internal error while parsing {}", parser_name));
+                }
+            });
     }
 };
 

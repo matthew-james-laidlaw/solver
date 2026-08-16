@@ -49,7 +49,7 @@ template <typename T>
 auto Maybe(Parser<T> parser) -> Parser<std::optional<T>>
 {
     return Parser<std::optional<T>>(
-        "maybe",
+        std::string("maybe(") + parser.Name() + ")",
         [=](State state) -> Result<std::optional<T>>
         {
             auto result = parser(state);
@@ -67,7 +67,7 @@ template <typename T>
 auto operator*(Parser<T> parser) -> Parser<std::vector<T>>
 {
     return Parser<std::vector<T>>(
-        "operator*",
+        std::string("many(") + parser.Name() + ")",
         [=](State state) -> Result<std::vector<T>>
         {
             std::vector<T> values;
@@ -102,7 +102,7 @@ template <typename T>
 auto operator|(Parser<T> a, Parser<T> b) -> Parser<T>
 {
     return Parser<T>(
-        "operator|",
+        std::string("(") + a.Name() + " | " + b.Name() + ")",
         [=](State state) -> Result<T>
         {
             auto first = a(state);
@@ -130,17 +130,17 @@ auto operator&(Parser<A> a, Parser<B> b) -> Parser<std::tuple<A, B>>
     using R = std::tuple<A, B>;
 
     return Parser<R>(
-        "operator&",
+        std::string("(") + a.Name() + " & " + b.Name() + ")",
         [=](State state) -> Result<R>
         {
             auto result_a = a(state);
             if (!result_a.Succeeded()) {
-                return Result<R>::Failure(state, result_a.Message());
+                return Result<R>::Failure(result_a.Rest(), result_a.Message());
             }
 
             auto result_b = b(result_a.Rest());
             if (!result_b.Succeeded()) {
-                return Result<R>::Failure(state, result_b.Message());
+                return Result<R>::Failure(result_b.Rest(), result_b.Message());
             }
 
             return Result<R>::Success({result_a.Value(), result_b.Value()}, result_b.Rest());

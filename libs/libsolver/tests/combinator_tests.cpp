@@ -218,6 +218,6 @@ TEST(CombinatorTests, map_fails)
             .Map([](Token token) -> int { return std::stoi(token.lexeme); })(state);
 
     ASSERT_FALSE(result.Succeeded());
-    ASSERT_EQ(result.Message(), "map fn failed");
+    ASSERT_EQ(result.Message(), "internal error while parsing '+'");
     ASSERT_EQ(result.Rest().Peek(), source[0]);
 }
