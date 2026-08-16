@@ -2,6 +2,7 @@
 
 #include <backend/polynomial.h>
 
+#include <format>
 #include <string>
 #include <vector>
 
