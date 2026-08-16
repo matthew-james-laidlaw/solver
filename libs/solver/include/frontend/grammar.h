@@ -4,7 +4,7 @@
 
 #include <backend/monomial.h>
 #include <combinator/combinator.h>
-#include <frontend/token.h>
+#include <combinator/token.h>
 
 #include <optional>
 #include <vector>

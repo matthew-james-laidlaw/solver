@@ -1,6 +1,6 @@
 #pragma once
 
-#include <frontend/token.h>
+#include <combinator/token.h>
 
 #include <span>
 

@@ -1,15 +1,14 @@
 cpm_add_component(solver
     SOURCES
-        src/backend/monomial.cpp
-        src/backend/polynomial.cpp
-        src/backend/solver.cpp
-        src/frontend/lexer.cpp
-        src/frontend/parser.cpp
-        src/frontend/state.cpp
-        src/frontend/token.cpp
+        src/monomial.cpp
+        src/polynomial.cpp
+        src/solver.cpp
+        src/lexer.cpp
+        src/parser.cpp
     TEST_SOURCES
-        tests/combinator_tests.cpp
         tests/lexer_tests.cpp
         tests/parser_tests.cpp
         tests/solver_tests.cpp
+    DEPENDENCIES
+        combinator
 )

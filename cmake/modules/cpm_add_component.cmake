@@ -12,7 +12,8 @@ function(cpm_add_component component_name)
     endif()
 
     add_library(${lib_target} ${ARG_SOURCES})
-    target_include_directories(${lib_target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_include_directories(${lib_target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_include_directories(${lib_target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
     if(ARG_DEPENDENCIES)
         target_link_libraries(${lib_target} PUBLIC ${ARG_DEPENDENCIES})

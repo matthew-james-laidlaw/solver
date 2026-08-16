@@ -34,7 +34,7 @@ jobs:
         run: ctest --test-dir build -C Release --output-on-failure
 
       - name: Smoke test the app
-        run: ./build/bin/Release/solve --function "f(x) = 3x^2 + 5"
+        run: ./build/bin/Release/solve --function "f(x) = 3x + 5"
 
   coverage:
     runs-on: ubuntu-latest

@@ -1,5 +1,5 @@
-#include <frontend/state.h>
-#include <frontend/token.h>
+#include <combinator/state.h>
+#include <combinator/token.h>
 
 namespace solver
 {

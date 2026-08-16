@@ -18,9 +18,9 @@ The combinator library consists of parsing primitives and overloaded operators t
 * Choice (operator |) -- Runs two parsers expecting at least one of them to succeed, returns the first successful match.
 * Combine (operator &) -- Runs two parsers expecting them both to succeed and returns a tuple of their results.
 
-## ToDo
+## TODO
 
 * Column numbers in error reporting
 * Fuzz testing
-* Unit test coverage
 * Complete the solving algorithms
+* Symbolic solutions e.g., `f(x) = 3x + 5` can report solution as `-5/3` rather than decimal form.

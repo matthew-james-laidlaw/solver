@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
 #include <combinator/combinator.h>
-#include <frontend/result.h>
-#include <frontend/state.h>
-#include <frontend/token.h>
+#include <combinator/result.h>
+#include <combinator/state.h>
+#include <combinator/token.h>
 
 #include <optional>
 #include <span>

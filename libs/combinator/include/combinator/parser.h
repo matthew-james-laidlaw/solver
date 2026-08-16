@@ -1,7 +1,7 @@
 #pragma once
 
-#include <frontend/result.h>
-#include <frontend/state.h>
+#include <combinator/result.h>
+#include <combinator/state.h>
 
 #include <format>
 #include <functional>

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <combinator/token.h>
 #include <frontend/lexer.h>
-#include <frontend/token.h>
 
 #include <stdexcept>
 #include <string>

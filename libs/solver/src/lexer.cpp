@@ -1,5 +1,4 @@
 #include <frontend/lexer.h>
-#include <frontend/token.h>
 
 #include <cstddef>
 #include <stdexcept>
