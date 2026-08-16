@@ -1,1 +1,1 @@
-add_subdirectory(libsolver)
+add_subdirectory(solver)

@@ -1,4 +1,4 @@
-cpm_add_component(libsolver
+cpm_add_component(solver
     SOURCES
         src/backend/monomial.cpp
         src/backend/polynomial.cpp
