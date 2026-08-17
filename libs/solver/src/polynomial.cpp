@@ -103,7 +103,33 @@ auto operator-(const Polynomial& a, const Polynomial& b) -> Polynomial
 
 auto operator*(const Polynomial& a, const Polynomial& b) -> Polynomial
 {
-    throw std::runtime_error("Polynomial::operator* not implemented");
+    if (a.Order() != b.Order()) {
+        throw std::runtime_error("Polynomial::operator* operands must have same order");
+    }
+
+    // TODO
+    // * Polynomial reporting order rather than actual size is hard to keep track of.
+    // * Allow for different sized polynomials
+    // * Rather than an if statement in the hot loop, we can zero extend both inputs to
+    // n_c and let them get evaluated to 0
+    //      (this also fixes the previous bullet)?
+
+    auto n_a = a.Order() + 1;
+    auto n_b = b.Order() + 1;
+    auto n_c = n_a + n_b - 1;
+
+    auto c = Polynomial(n_c - 1);
+
+    for (size_t i = 0; i < n_c; ++i) {
+        for (size_t j = 0; j <= i; ++j) {
+            if (j >= n_a || (i - j) >= n_b) {
+                continue;
+            }
+            c[i] += a[j] * b[i - j];
+        }
+    }
+
+    return c;
 }
 
 auto operator/(const Polynomial& a, const Polynomial& b) -> Polynomial

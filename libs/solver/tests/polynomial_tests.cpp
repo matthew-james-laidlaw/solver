@@ -155,9 +155,19 @@ TEST(PolynomialTests, subtract_polynomials)
     }
 }
 
-TEST(PolynomialTests, DISABLED_multiply_polynomials)
+TEST(PolynomialTests, multiply_polynomials)
 {
-    ASSERT_TRUE(false);
+    {
+        const auto p1 = Polynomial({1, 2, 3});
+        const auto p2 = Polynomial({4, 5, 6});
+        const auto p3 = p2 * p1;
+        ASSERT_EQ(p3.Order(), 4);
+        ASSERT_EQ(p3[0], 4);
+        ASSERT_EQ(p3[1], 13);
+        ASSERT_EQ(p3[2], 28);
+        ASSERT_EQ(p3[3], 27);
+        ASSERT_EQ(p3[4], 18);
+    }
 }
 
 TEST(PolynomialTests, DISABLED_divide_polynomials)
