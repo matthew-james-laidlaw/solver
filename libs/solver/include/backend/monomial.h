@@ -29,7 +29,6 @@ public:
     auto Coefficient() const -> int;
     auto Exponent() const -> int;
 
-    auto operator+(int coefficient) const -> Monomial;
     auto operator-() const -> Monomial;
 };
 

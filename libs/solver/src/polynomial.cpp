@@ -31,16 +31,16 @@ Polynomial::Polynomial(const std::vector<Monomial>& monomials)
 }
 
 Polynomial::Polynomial(size_t order)
-    : m_terms(order, 0)
-{
-    if (order == 0) {
-        throw std::runtime_error("cannot create a polynomial of order 0");
-    }
-}
+    : m_terms(order + 1, 0)
+{}
 
 Polynomial::Polynomial(std::initializer_list<int> coeffs)
-    : Polynomial(coeffs.size())
+    : Polynomial(coeffs.size() - 1)
 {
+    if (coeffs.size() == 0) {
+        throw std::runtime_error(
+            "a polynomial cannot be constructed with an empty list of coefficients");
+    }
     std::copy_n(coeffs.begin(), coeffs.size(), m_terms.begin());
 }
 
@@ -58,7 +58,7 @@ auto Polynomial::operator[](size_t i) -> int&
 
 auto Polynomial::Order() const -> size_t
 {
-    return m_terms.size();
+    return m_terms.size() - 1;
 }
 
 auto Polynomial::CheckBounds(size_t i) const -> void

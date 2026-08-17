@@ -50,5 +50,36 @@
             "configurePreset": "coverage",
             "configuration": "Debug"
         }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "hidden": true,
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": false
+            }
+        },
+        {
+            "name": "debug",
+            "inherits": "default",
+            "configurePreset": "base",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "inherits": "default",
+            "configurePreset": "base",
+            "configuration": "Release"
+        },
+        {
+            "name": "coverage",
+            "inherits": "default",
+            "configurePreset": "coverage",
+            "configuration": "Debug"
+        }
     ]
 }

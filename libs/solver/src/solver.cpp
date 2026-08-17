@@ -12,7 +12,7 @@ namespace solver
 
 auto SolveFirstOrder(const Polynomial& equation) -> Solution
 {
-    if (equation.Order() != 2) {
+    if (equation.Order() != 1) {
         throw std::runtime_error("expected a first order polynomial");
     }
     auto a = (double)equation[1];
@@ -22,7 +22,7 @@ auto SolveFirstOrder(const Polynomial& equation) -> Solution
 
 auto SolveSecondOrder(const Polynomial& equation) -> Solution
 {
-    if (equation.Order() != 3) {
+    if (equation.Order() != 2) {
         throw std::runtime_error("expected a second order polynomial");
     }
 
@@ -41,7 +41,7 @@ auto SolveSecondOrder(const Polynomial& equation) -> Solution
 
 auto SolveThirdOrder(const Polynomial& equation) -> Solution
 {
-    if (equation.Order() != 4) {
+    if (equation.Order() != 3) {
         throw std::runtime_error("expected a third order polynomial");
     }
 
@@ -84,7 +84,7 @@ auto SolveThirdOrder(const Polynomial& equation) -> Solution
 
 auto SolveFourthOrder(const Polynomial& equation) -> Solution
 {
-    if (equation.Order() != 5) {
+    if (equation.Order() != 4) {
         throw std::runtime_error("expected a fourth order polynomial");
     }
     throw std::runtime_error("fourth order solving not implemented");
@@ -93,15 +93,15 @@ auto SolveFourthOrder(const Polynomial& equation) -> Solution
 auto Solve(const Polynomial& equation) -> Solution
 {
     switch (equation.Order()) {
-    case 1:
+    case 0:
         return {}; // constant function has no roots
-    case 2:
+    case 1:
         return SolveFirstOrder(equation);
-    case 3:
+    case 2:
         return SolveSecondOrder(equation);
-    case 4:
+    case 3:
         return SolveThirdOrder(equation);
-    case 5:
+    case 4:
         return SolveFourthOrder(equation);
     default:
         throw std::runtime_error("No general solution for polynomials of order >= 4. "
