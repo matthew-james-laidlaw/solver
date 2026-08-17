@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <combinator/combinator.h>
+#include <combinator/parser.h>
 #include <combinator/result.h>
 #include <combinator/state.h>
 #include <combinator/token.h>

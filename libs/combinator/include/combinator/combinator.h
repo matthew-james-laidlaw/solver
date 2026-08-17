@@ -7,12 +7,12 @@
 #include <combinator/state.h>
 
 #include <format>
-#include <functional>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <tuple>
-#include <type_traits>
 #include <vector>
+#include "combinator/token.h"
 
 namespace solver
 {

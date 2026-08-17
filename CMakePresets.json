@@ -18,28 +18,35 @@
                 "CMAKE_C_FLAGS": "-fprofile-instr-generate -fcoverage-mapping",
                 "CMAKE_CXX_FLAGS": "-fprofile-instr-generate -fcoverage-mapping"
             }
-        },
-        {
-            "name": "iwyu",
-            "inherits": "base",
-            "cacheVariables": {
-                "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
-            }
         }
     ],
     "buildPresets": [
         {
+            "name": "parallel",
+            "hidden": true,
+            "jobs": 0
+        },
+        {
             "name": "debug",
+            "inherits": [
+                "parallel"
+            ],
             "configurePreset": "base",
             "configuration": "Debug"
         },
         {
             "name": "release",
+            "inherits": [
+                "parallel"
+            ],
             "configurePreset": "base",
             "configuration": "Release"
         },
         {
             "name": "coverage",
+            "inherits": [
+                "parallel"
+            ],
             "configurePreset": "coverage",
             "configuration": "Debug"
         }

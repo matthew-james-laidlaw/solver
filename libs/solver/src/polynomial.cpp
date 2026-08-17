@@ -1,7 +1,11 @@
+#include <backend/monomial.h>
 #include <backend/polynomial.h>
 
 #include <algorithm>
+#include <cstddef>
+#include <initializer_list>
 #include <stdexcept>
+#include <vector>
 
 namespace solver
 {

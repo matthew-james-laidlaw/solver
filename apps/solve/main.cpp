@@ -1,10 +1,14 @@
 #include <CLI/CLI.hpp>
+
 #include <backend/solver.h>
 #include <frontend/parser.h>
 
+#include <complex>
+#include <exception>
 #include <format>
 #include <iostream>
 #include <string>
+#include <vector>
 
 auto main(int argc, char** argv) -> int
 {

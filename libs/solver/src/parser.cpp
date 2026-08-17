@@ -1,14 +1,16 @@
 #include <backend/polynomial.h>
-#include <combinator/combinator.h>
+#include <combinator/parser.h>
 #include <combinator/result.h>
 #include <combinator/token.h>
 #include <frontend/grammar.h>
 #include <frontend/lexer.h>
 #include <frontend/parser.h>
 
-#include <algorithm>
+#include <format>
 #include <span>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
 namespace solver
 {

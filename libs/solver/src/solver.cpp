@@ -1,5 +1,7 @@
+#include <backend/polynomial.h>
 #include <backend/solver.h>
 
+#include <cmath>
 #include <complex>
 #include <stdexcept>
 

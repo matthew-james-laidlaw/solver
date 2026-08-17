@@ -1,11 +1,13 @@
 #pragma once
 
-#include <backend/monomial.h>
-
+#include <cstddef>
+#include <initializer_list>
 #include <vector>
 
 namespace solver
 {
+
+class Monomial;
 
 /** @brief A polynomial is a collection of monomials where each index in the list
  * corresponds to an exponent value. E.g., 3x^2 + 5x - 7 is stored as { -7, 5, 3 }.

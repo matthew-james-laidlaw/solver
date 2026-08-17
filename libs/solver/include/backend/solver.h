@@ -3,6 +3,8 @@
 #include <backend/polynomial.h>
 
 #include <complex>
+#include <format>
+#include <vector>
 
 namespace solver
 {

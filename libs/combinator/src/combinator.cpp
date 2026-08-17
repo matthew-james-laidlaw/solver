@@ -1,6 +1,9 @@
 // clang-format off
 
 #include <combinator/combinator.h>
+#include <combinator/parser.h>
+#include <combinator/result.h>
+#include <combinator/state.h>
 
 namespace solver
 {

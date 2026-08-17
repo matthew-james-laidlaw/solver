@@ -1,9 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <backend/monomial.h>
+#include <backend/polynomial.h>
 #include <backend/solver.h>
 
 #include <algorithm>
+#include <complex>
+#include <cstddef>
+#include <string>
 
 using namespace solver;
 
