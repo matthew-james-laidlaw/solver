@@ -72,11 +72,11 @@ auto operator+(const Polynomial& a, const Polynomial& b) -> Polynomial
 {
     auto order = std::max(a.Order(), b.Order());
     auto c = Polynomial(order);
-    for (size_t i = 0; i < order; ++i) {
-        if (i < a.Order()) {
+    for (size_t i = 0; i <= order; ++i) {
+        if (i <= a.Order()) {
             c[i] += a[i];
         }
-        if (i < b.Order()) {
+        if (i <= b.Order()) {
             c[i] += b[i];
         }
     }
@@ -85,7 +85,20 @@ auto operator+(const Polynomial& a, const Polynomial& b) -> Polynomial
 
 auto operator-(const Polynomial& a, const Polynomial& b) -> Polynomial
 {
-    throw std::runtime_error("Polynomial::operator- not implemented");
+    auto order = std::max(a.Order(), b.Order());
+    auto c = Polynomial(order);
+    for (int i = order; i >= 0; --i) {
+        if (i <= a.Order() && i <= b.Order()) {
+            c[i] = a[i] - b[i];
+        }
+        else if (i <= a.Order()) {
+            c[i] = a[i];
+        }
+        else if (i <= b.Order()) {
+            c[i] = -b[i];
+        }
+    }
+    return c;
 }
 
 auto operator*(const Polynomial& a, const Polynomial& b) -> Polynomial

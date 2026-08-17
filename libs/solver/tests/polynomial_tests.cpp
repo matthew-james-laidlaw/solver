@@ -8,41 +8,41 @@
 
 using namespace solver;
 
-TEST(BackendTests, construct_constant_monomial)
+TEST(PolynomialTests, construct_constant_monomial)
 {
     const auto monomial = Monomial::Constant(3);
     ASSERT_EQ(monomial.Coefficient(), 3);
     ASSERT_EQ(monomial.Exponent(), 0);
 }
 
-TEST(BackendTests, construct_variable_monomial)
+TEST(PolynomialTests, construct_variable_monomial)
 {
     const auto monomial = Monomial::Variable(3);
     ASSERT_EQ(monomial.Coefficient(), 1);
     ASSERT_EQ(monomial.Exponent(), 3);
 }
 
-TEST(BackendTests, construct_monomial)
+TEST(PolynomialTests, construct_monomial)
 {
     const auto monomial = Monomial(3, 2);
     ASSERT_EQ(monomial.Coefficient(), 3);
     ASSERT_EQ(monomial.Exponent(), 2);
 }
 
-TEST(BackendTests, negate_monomial)
+TEST(PolynomialTests, negate_monomial)
 {
     const auto monomial = -Monomial(3, 2);
     ASSERT_EQ(monomial.Coefficient(), -3);
     ASSERT_EQ(monomial.Exponent(), 2);
 }
 
-TEST(BackendTests, construct_polynomial_from_empty_monomial_list)
+TEST(PolynomialTests, construct_polynomial_from_empty_monomial_list)
 {
     const auto monomials = std::vector<Monomial>{};
     ASSERT_THROW(const auto polynomial = Polynomial(monomials), std::runtime_error);
 }
 
-TEST(BackendTests, construct_polynomial_from_monomials)
+TEST(PolynomialTests, construct_polynomial_from_monomials)
 {
     const auto monomials = std::vector<Monomial>{{3, 5}};
     const auto polynomial = Polynomial(monomials);
@@ -56,7 +56,7 @@ TEST(BackendTests, construct_polynomial_from_monomials)
     ASSERT_EQ(polynomial[5], 3);
 }
 
-TEST(BackendTests, construct_polynomial_nonzero_order)
+TEST(PolynomialTests, construct_polynomial_nonzero_order)
 {
     const auto polynomial = Polynomial(3);
 
@@ -67,13 +67,13 @@ TEST(BackendTests, construct_polynomial_nonzero_order)
     ASSERT_EQ(polynomial[3], 0);
 }
 
-TEST(BackendTests, construct_polynomial_from_empty_coefficient_list)
+TEST(PolynomialTests, construct_polynomial_from_empty_coefficient_list)
 {
     ASSERT_THROW(const auto polynomial = Polynomial(std::initializer_list<int>{}),
                  std::runtime_error);
 }
 
-TEST(BackendTests, construct_polynomial_from_coefficients)
+TEST(PolynomialTests, construct_polynomial_from_coefficients)
 {
     const auto polynomial = Polynomial({1, 2, 3});
 
@@ -83,8 +83,40 @@ TEST(BackendTests, construct_polynomial_from_coefficients)
     ASSERT_EQ(polynomial[2], 3);
 }
 
-TEST(BackendTests, polynomial_bounds_checking)
+TEST(PolynomialTests, polynomial_bounds_checking)
 {
     const auto polynomial = Polynomial(3);
     ASSERT_THROW(polynomial[10], std::runtime_error);
+}
+
+TEST(PolynomialTests, add_polynomials)
+{
+    const auto p1 = Polynomial({1, 2, 3});
+    const auto p2 = Polynomial({4, 5, 6});
+    const auto p3 = p1 + p2;
+    ASSERT_EQ(p3.Order(), 2);
+    ASSERT_EQ(p3[0], 5);
+    ASSERT_EQ(p3[1], 7);
+    ASSERT_EQ(p3[2], 9);
+}
+
+TEST(PolynomialTests, subtract_polynomials)
+{
+    const auto p1 = Polynomial({3, 2, 1});
+    const auto p2 = Polynomial({4, 5, 6});
+    const auto p3 = p2 - p1;
+    ASSERT_EQ(p3.Order(), 2);
+    ASSERT_EQ(p3[0], 1);
+    ASSERT_EQ(p3[1], 3);
+    ASSERT_EQ(p3[2], 5);
+}
+
+TEST(PolynomialTests, DISABLED_multiply_polynomials)
+{
+    ASSERT_TRUE(false);
+}
+
+TEST(PolynomialTests, DISABLED_divide_polynomials)
+{
+    ASSERT_TRUE(false);
 }
