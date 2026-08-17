@@ -1,10 +1,10 @@
 mkdir -p build/coverage
 
-# each ctest-launched test process is a separate binary invocation, so give
-# each one a unique profile filename (%p = pid) or later runs clobber earlier
-# ones' coverage data
+# specify the naming convention for generated .profraw files
+# and run the tests to generate them
 LLVM_PROFILE_FILE="%m_%p.profraw" ctest --preset coverage
 
+# allow recursive globbing '**'
 shopt -s globstar
 
 # create a .profdata file by merging every test process's profile

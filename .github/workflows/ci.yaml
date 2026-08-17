@@ -53,9 +53,6 @@ jobs:
       - name: Build CMake
         run: cmake --build --preset coverage
 
-      - name: Run tests
-        run: ctest --test-dir build -C Release --output-on-failure
-
       - name: Generate coverage report
         run: ./scripts/coverage.sh
 

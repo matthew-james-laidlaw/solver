@@ -26,6 +26,13 @@ cpm_add_spdlog()
 enable_testing()
 include(GoogleTest)
 
+if(SOLVER_BUILD_TESTS)
+    add_executable(unit_tests)
+    target_link_libraries(unit_tests GTest::gtest_main)
+endif()
+
 # --- source code ---
 add_subdirectory(libs)
 add_subdirectory(apps)
+
+gtest_discover_tests(unit_tests)
