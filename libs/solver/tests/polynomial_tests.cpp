@@ -91,24 +91,68 @@ TEST(PolynomialTests, polynomial_bounds_checking)
 
 TEST(PolynomialTests, add_polynomials)
 {
-    const auto p1 = Polynomial({1, 2, 3});
-    const auto p2 = Polynomial({4, 5, 6});
-    const auto p3 = p1 + p2;
-    ASSERT_EQ(p3.Order(), 2);
-    ASSERT_EQ(p3[0], 5);
-    ASSERT_EQ(p3[1], 7);
-    ASSERT_EQ(p3[2], 9);
+    {
+        const auto p1 = Polynomial({1, 2, 3});
+        const auto p2 = Polynomial({4, 5, 6});
+        const auto p3 = p1 + p2;
+        ASSERT_EQ(p3.Order(), 2);
+        ASSERT_EQ(p3[0], 5);
+        ASSERT_EQ(p3[1], 7);
+        ASSERT_EQ(p3[2], 9);
+    }
+
+    {
+        const auto p1 = Polynomial({1, 2, 3});
+        const auto p2 = Polynomial({4, 5});
+        const auto p3 = p1 + p2;
+        ASSERT_EQ(p3.Order(), 2);
+        ASSERT_EQ(p3[0], 5);
+        ASSERT_EQ(p3[1], 7);
+        ASSERT_EQ(p3[2], 3);
+    }
+
+    {
+        const auto p1 = Polynomial({1, 2});
+        const auto p2 = Polynomial({4, 5, 6});
+        const auto p3 = p1 + p2;
+        ASSERT_EQ(p3.Order(), 2);
+        ASSERT_EQ(p3[0], 5);
+        ASSERT_EQ(p3[1], 7);
+        ASSERT_EQ(p3[2], 6);
+    }
 }
 
 TEST(PolynomialTests, subtract_polynomials)
 {
-    const auto p1 = Polynomial({3, 2, 1});
-    const auto p2 = Polynomial({4, 5, 6});
-    const auto p3 = p2 - p1;
-    ASSERT_EQ(p3.Order(), 2);
-    ASSERT_EQ(p3[0], 1);
-    ASSERT_EQ(p3[1], 3);
-    ASSERT_EQ(p3[2], 5);
+    {
+        const auto p1 = Polynomial({3, 2, 1});
+        const auto p2 = Polynomial({4, 5, 6});
+        const auto p3 = p2 - p1;
+        ASSERT_EQ(p3.Order(), 2);
+        ASSERT_EQ(p3[0], 1);
+        ASSERT_EQ(p3[1], 3);
+        ASSERT_EQ(p3[2], 5);
+    }
+
+    {
+        const auto p1 = Polynomial({3, 2, 1});
+        const auto p2 = Polynomial({4, 5});
+        const auto p3 = p2 - p1;
+        ASSERT_EQ(p3.Order(), 2);
+        ASSERT_EQ(p3[0], 1);
+        ASSERT_EQ(p3[1], 3);
+        ASSERT_EQ(p3[2], -1);
+    }
+
+    {
+        const auto p1 = Polynomial({3, 2});
+        const auto p2 = Polynomial({4, 5, 6});
+        const auto p3 = p2 - p1;
+        ASSERT_EQ(p3.Order(), 2);
+        ASSERT_EQ(p3[0], 1);
+        ASSERT_EQ(p3[1], 3);
+        ASSERT_EQ(p3[2], 6);
+    }
 }
 
 TEST(PolynomialTests, DISABLED_multiply_polynomials)
