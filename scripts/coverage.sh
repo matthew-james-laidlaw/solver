@@ -10,13 +10,13 @@ llvm-profdata merge -sparse $(find build -type f -name '*.profraw') \
 
 # report coverage to stdout
 llvm-cov report                                              \
-    build/bin/Debug/solver_tests                             \
+    build/bin/Debug/unit_tests                               \
     -instr-profile=build/coverage/coverage.profdata          \
     -ignore-filename-regex='(.*/tests/.*|.*/build/_deps/.*)'
 
 # also save coverage to an html file
 llvm-cov show                                                \
-    build/bin/Debug/solver_tests                             \
+    build/bin/Debug/unit_tests                               \
     -instr-profile=build/coverage/coverage.profdata          \
     -format=html                                             \
     -output-dir=build/coverage                               \
