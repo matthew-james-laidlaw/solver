@@ -4,11 +4,8 @@ mkdir -p build/coverage
 # and run the tests to generate them
 LLVM_PROFILE_FILE="%m_%p.profraw" ctest --preset coverage
 
-# allow recursive globbing '**'
-shopt -s globstar
-
 # create a .profdata file by merging every test process's profile
-llvm-profdata merge -sparse build/libs/**/*.profraw \
+llvm-profdata merge -sparse $(find build -type f -name '*.profraw') \
     -o build/coverage/coverage.profdata
 
 # report coverage to stdout
