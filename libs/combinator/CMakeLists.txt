@@ -1,8 +1,6 @@
 cpm_add_component(combinator
     SOURCES
         src/combinator.cpp
-        src/parser.cpp
-        src/result.cpp
         src/state.cpp
         src/token.cpp
     TEST_SOURCES

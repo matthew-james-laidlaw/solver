@@ -24,3 +24,5 @@ The combinator library consists of parsing primitives and overloaded operators t
 * Fuzz testing
 * Complete the solving algorithms
 * Symbolic solutions e.g., `f(x) = 3x + 5` can report solution as `-5/3` rather than decimal form.
+* Solutions near zero should be reported as 0 e.g., 1e-19 => 0
+* Better CLI flags

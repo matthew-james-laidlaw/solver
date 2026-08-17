@@ -20,28 +20,7 @@ namespace solver
 /** @brief Parser that attempts to match the given token type on the next element in the
  * state. Advances the state on success, otherwise returns an error message.
  */
-inline auto Expect(Token::Type type, std::string_view what) -> Parser<Token>
-{
-    return Parser<Token>(
-        std::string(what),
-        [=](State state) -> Result<Token>
-        {
-            if (state.Done()) {
-                return Result<Token>::Failure(
-                    state,
-                    std::format("parser error: unexpected end of input, expected '{}'", what));
-            }
-
-            auto current = state.Peek();
-            if (current.type != type) {
-                return Result<Token>::Failure(
-                    state,
-                    std::format("parser error: expected '{}', got '{}'", what, current.lexeme));
-            }
-
-            return Result<Token>::Success(current, state.Advance());
-        });
-}
+auto Expect(Token::Type type, std::string_view what) -> Parser<Token>;
 
 /** @brief Parser that attempts the given parser once. Allowing for no match.
  */
