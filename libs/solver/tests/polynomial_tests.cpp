@@ -157,6 +157,28 @@ TEST(PolynomialTests, multiply_polynomials)
         ASSERT_EQ(p3[3], 27);
         ASSERT_EQ(p3[4], 18);
     }
+
+    {
+        const auto p1 = Polynomial({1, 2, 3});
+        const auto p2 = Polynomial({4, 5});
+        const auto p3 = p2 * p1;
+        ASSERT_EQ(p3.Size(), 4);
+        ASSERT_EQ(p3[0], 4);
+        ASSERT_EQ(p3[1], 13);
+        ASSERT_EQ(p3[2], 22);
+        ASSERT_EQ(p3[3], 15);
+    }
+
+    {
+        const auto p1 = Polynomial({1, 2});
+        const auto p2 = Polynomial({4, 5, 6});
+        const auto p3 = p2 * p1;
+        ASSERT_EQ(p3.Size(), 4);
+        ASSERT_EQ(p3[0], 4);
+        ASSERT_EQ(p3[1], 13);
+        ASSERT_EQ(p3[2], 16);
+        ASSERT_EQ(p3[3], 12);
+    }
 }
 
 TEST(PolynomialTests, DISABLED_divide_polynomials)
