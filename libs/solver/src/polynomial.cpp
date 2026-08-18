@@ -7,6 +7,25 @@
 #include <stdexcept>
 #include <vector>
 
+namespace
+{
+
+auto ZeroExtend(const solver::Polynomial& p, size_t n) -> solver::Polynomial
+{
+    if (n <= p.Size()) {
+        return p;
+    }
+
+    auto extended = solver::Polynomial(std::vector<int>(n, 0));
+    for (size_t i = 0; i < p.Size(); ++i) {
+        extended[i] = p[i];
+    }
+
+    return extended;
+}
+
+} // namespace
+
 namespace solver
 {
 
@@ -67,15 +86,8 @@ auto operator+(const Polynomial& a, const Polynomial& b) -> Polynomial
 {
     auto n = std::max(a.Size(), b.Size());
 
-    auto aa = Polynomial(std::vector<int>(n, 0));
-    for (size_t i = 0; i < a.Size(); ++i) {
-        aa[i] = a[i];
-    }
-
-    auto bb = Polynomial(std::vector<int>(n, 0));
-    for (size_t i = 0; i < b.Size(); ++i) {
-        bb[i] = b[i];
-    }
+    auto aa = ZeroExtend(a, n);
+    auto bb = ZeroExtend(b, n);
 
     auto c = Polynomial(std::vector<int>(n, 0));
 
@@ -90,15 +102,8 @@ auto operator-(const Polynomial& a, const Polynomial& b) -> Polynomial
 {
     auto n = std::max(a.Size(), b.Size());
 
-    auto aa = Polynomial(std::vector<int>(n, 0));
-    for (size_t i = 0; i < a.Size(); ++i) {
-        aa[i] = a[i];
-    }
-
-    auto bb = Polynomial(std::vector<int>(n, 0));
-    for (size_t i = 0; i < b.Size(); ++i) {
-        bb[i] = b[i];
-    }
+    auto aa = ZeroExtend(a, n);
+    auto bb = ZeroExtend(b, n);
 
     auto c = Polynomial(std::vector<int>(n, 0));
 
@@ -113,15 +118,8 @@ auto operator*(const Polynomial& a, const Polynomial& b) -> Polynomial
 {
     auto n = a.Size() + b.Size() - 1;
 
-    auto aa = Polynomial(std::vector<int>(n, 0));
-    for (size_t i = 0; i < a.Size(); ++i) {
-        aa[i] = a[i];
-    }
-
-    auto bb = Polynomial(std::vector<int>(n, 0));
-    for (size_t i = 0; i < b.Size(); ++i) {
-        bb[i] = b[i];
-    }
+    auto aa = ZeroExtend(a, n);
+    auto bb = ZeroExtend(b, n);
 
     auto c = Polynomial(std::vector<int>(n, 0));
 
