@@ -24,19 +24,17 @@ public:
      */
     Polynomial(const std::vector<Monomial>& monomials);
 
-    /** @brief Create a polynomial of the given order with all coefficients set to zero.
-     */
-    Polynomial(size_t order);
-
     /** @brief Create a polynomial from a list of coefficients. For example { 1, 2, 3 }
      * becomes the polynomial 1 + 2x + 3x^2.
      */
-    Polynomial(std::initializer_list<int> coeffs);
+    Polynomial(std::vector<int> coeffs);
 
     auto operator[](size_t i) const -> int;
     auto operator[](size_t i) -> int&;
 
-    auto Order() const -> size_t;
+    /** @brief The number of terms in the polynomial.
+     */
+    auto Size() const -> size_t;
 
     friend auto operator+(const Polynomial& a, const Polynomial& b) -> Polynomial;
     friend auto operator-(const Polynomial& a, const Polynomial& b) -> Polynomial;

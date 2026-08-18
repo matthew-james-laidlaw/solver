@@ -277,7 +277,7 @@ TEST(ParserTests, parse_polynomial)
 
     // polynomial creation will have sorted and combined like terms and added 0 terms for
     // powers of 0 and 1.
-    ASSERT_EQ(polynomial.Order(), 3);
+    ASSERT_EQ(polynomial.Size(), 4);
     ASSERT_EQ(polynomial[0], 0);
     ASSERT_EQ(polynomial[1], 0);
     ASSERT_EQ(polynomial[2], 9);
