@@ -5,6 +5,7 @@
 #include <combinator/parser.h>
 #include <combinator/result.h>
 #include <combinator/state.h>
+#include <combinator/token.h>
 
 #include <format>
 #include <optional>
@@ -12,7 +13,6 @@
 #include <string_view>
 #include <tuple>
 #include <vector>
-#include "combinator/token.h"
 
 namespace solver
 {
