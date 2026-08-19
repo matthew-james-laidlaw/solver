@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace solver
+namespace combinator
 {
 
 struct Token
@@ -25,4 +25,4 @@ struct Token
 
 auto operator==(const Token& lhs, const Token& rhs) -> bool;
 
-} // namespace solver
+} // namespace combinator

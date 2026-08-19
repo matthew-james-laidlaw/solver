@@ -7,7 +7,7 @@
 #include <functional>
 #include <string>
 
-namespace solver
+namespace combinator
 {
 
 /** @brief Any callable that returns a Result given an input State. The combinator system
@@ -67,4 +67,4 @@ public:
     }
 };
 
-} // namespace solver
+} // namespace combinator

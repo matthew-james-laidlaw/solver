@@ -1,7 +1,7 @@
 #include <combinator/state.h>
 #include <combinator/token.h>
 
-namespace solver
+namespace combinator
 {
 
 State::State(std::span<const Token> source)
@@ -23,4 +23,4 @@ auto State::Advance() const -> State
     return m_source.subspan(1);
 }
 
-} // namespace solver
+} // namespace combinator

@@ -4,7 +4,7 @@
 
 #include <span>
 
-namespace solver
+namespace combinator
 {
 
 /** @brief A non-owning, cheaply-constructible collection of tokens to parse.
@@ -24,4 +24,4 @@ public:
     auto Advance() const -> State;
 };
 
-} // namespace solver
+} // namespace combinator

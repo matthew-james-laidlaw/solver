@@ -1,6 +1,6 @@
 #include <combinator/token.h>
 
-namespace solver
+namespace combinator
 {
 
 auto operator==(const Token& lhs, const Token& rhs) -> bool
@@ -8,4 +8,4 @@ auto operator==(const Token& lhs, const Token& rhs) -> bool
     return lhs.type == rhs.type && lhs.lexeme == rhs.lexeme;
 }
 
-} // namespace solver
+} // namespace combinator

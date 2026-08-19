@@ -16,15 +16,15 @@ namespace solver
  |     Parser Primitives     |
  * ------------------------- */
 
-inline auto Variable = Expect(Token::Type::Variable, "a variable");
-inline auto Caret    = Expect(Token::Type::Caret, "'^'");
-inline auto Plus     = Expect(Token::Type::Plus, "'+'");
-inline auto Minus    = Expect(Token::Type::Minus, "'-'");
-inline auto Function = Expect(Token::Type::Function, "'f(x)'");
-inline auto Equals   = Expect(Token::Type::Equals, "'='");
+inline auto Variable = Expect(combinator::Token::Type::Variable, "a variable");
+inline auto Caret    = Expect(combinator::Token::Type::Caret, "'^'");
+inline auto Plus     = Expect(combinator::Token::Type::Plus, "'+'");
+inline auto Minus    = Expect(combinator::Token::Type::Minus, "'-'");
+inline auto Function = Expect(combinator::Token::Type::Function, "'f(x)'");
+inline auto Equals   = Expect(combinator::Token::Type::Equals, "'='");
 
-inline auto ToInt = [](Token token) -> int { return std::stoi(token.lexeme); };
-inline auto Number = Expect(Token::Type::Number, "a number").Map(ToInt);
+inline auto ToInt = [](combinator::Token token) -> int { return std::stoi(token.lexeme); };
+inline auto Number = Expect(combinator::Token::Type::Number, "a number").Map(ToInt);
 
 /* --------------------- *
  |     Grammar Rules     |
@@ -89,7 +89,7 @@ inline auto BinaryParser =
     .Map([](auto&& args) -> Monomial
     {
         auto& [op, monomial] = args;
-        return op.type == Token::Type::Minus ? -monomial : monomial;
+        return op.type == combinator::Token::Type::Minus ? -monomial : monomial;
     });
 
 /** @brief Parses the grammar rule:

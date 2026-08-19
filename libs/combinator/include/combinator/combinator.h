@@ -14,7 +14,7 @@
 #include <tuple>
 #include <vector>
 
-namespace solver
+namespace combinator
 {
 
 /** @brief Parser that attempts to match the given token type on the next element in the
@@ -126,6 +126,6 @@ auto operator&(Parser<A> a, Parser<B> b) -> Parser<std::tuple<A, B>>
         });
 }
 
-} // namespace solver
+} // namespace combinator
 
 // clang-format on

@@ -15,9 +15,9 @@
 namespace solver
 {
 
-auto Parse(const std::vector<Token>& source) -> Polynomial
+auto Parse(const std::vector<combinator::Token>& source) -> Polynomial
 {
-    std::span<const Token> state(source);
+    std::span<const combinator::Token> state(source);
     auto result = EquationParser(state);
     if (!result.Succeeded()) {
         throw std::runtime_error(result.Message());

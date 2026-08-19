@@ -6,14 +6,19 @@
 #include <string>
 #include <vector>
 
-namespace solver
+namespace combinator
 {
 
 struct Token;
 
+} // namespace combinator
+
+namespace solver
+{
+
 /** @brief Parses an equation from an already-tokenized source.
  */
-auto Parse(const std::vector<Token>& source) -> Polynomial;
+auto Parse(const std::vector<combinator::Token>& source) -> Polynomial;
 
 /** @brief Parses an equation directly from a source string.
  */

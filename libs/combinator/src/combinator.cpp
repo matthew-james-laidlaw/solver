@@ -5,7 +5,7 @@
 #include <combinator/result.h>
 #include <combinator/state.h>
 
-namespace solver
+namespace combinator
 {
 
 auto Expect(Token::Type type, std::string_view what) -> Parser<Token>
@@ -31,6 +31,6 @@ auto Expect(Token::Type type, std::string_view what) -> Parser<Token>
         });
 }
 
-} // namespace solver
+} // namespace combinator
 
 // clang-format on
