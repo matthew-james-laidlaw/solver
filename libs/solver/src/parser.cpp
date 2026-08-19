@@ -2,8 +2,8 @@
 #include <combinator/result.h>
 #include <grammar.h>
 #include <lexer.h>
+#include <parser.h>
 #include <polynomial.h>
-#include <solver/parser.h>
 #include <token.h>
 
 #include <format>

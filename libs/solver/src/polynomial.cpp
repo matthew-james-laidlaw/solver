@@ -134,6 +134,8 @@ auto operator*(const Polynomial& a, const Polynomial& b) -> Polynomial
 
 auto operator/(const Polynomial& a, const Polynomial& b) -> Polynomial
 {
+    (void)a;
+    (void)b;
     throw std::runtime_error("Polynomial::operator/ not implemented");
 }
 

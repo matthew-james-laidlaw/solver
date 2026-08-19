@@ -1,3 +1,4 @@
+#include <parser.h>
 #include <polynomial.h>
 #include <solver/solver.h>
 
@@ -7,10 +8,10 @@
 
 using namespace std::complex_literals;
 
-namespace solver
+namespace
 {
 
-auto SolveFirstOrder(const Polynomial& equation) -> Solution
+auto SolveFirstOrder(const solver::Polynomial& equation) -> solver::Solution
 {
     if (equation.Size() != 2) {
         throw std::runtime_error("expected a first order polynomial");
@@ -20,7 +21,7 @@ auto SolveFirstOrder(const Polynomial& equation) -> Solution
     return {-b / a};
 }
 
-auto SolveSecondOrder(const Polynomial& equation) -> Solution
+auto SolveSecondOrder(const solver::Polynomial& equation) -> solver::Solution
 {
     if (equation.Size() != 3) {
         throw std::runtime_error("expected a second order polynomial");
@@ -39,7 +40,7 @@ auto SolveSecondOrder(const Polynomial& equation) -> Solution
     return {x_0, x_1};
 }
 
-auto SolveThirdOrder(const Polynomial& equation) -> Solution
+auto SolveThirdOrder(const solver::Polynomial& equation) -> solver::Solution
 {
     if (equation.Size() != 4) {
         throw std::runtime_error("expected a third order polynomial");
@@ -82,7 +83,7 @@ auto SolveThirdOrder(const Polynomial& equation) -> Solution
     return {x_0, x_1, x_2};
 }
 
-auto SolveFourthOrder(const Polynomial& equation) -> Solution
+auto SolveFourthOrder(const solver::Polynomial& equation) -> solver::Solution
 {
     if (equation.Size() != 5) {
         throw std::runtime_error("expected a fourth order polynomial");
@@ -90,7 +91,7 @@ auto SolveFourthOrder(const Polynomial& equation) -> Solution
     throw std::runtime_error("fourth order solving not implemented");
 }
 
-auto Solve(const Polynomial& equation) -> Solution
+auto SolvePolynomial(const solver::Polynomial& equation) -> solver::Solution
 {
     switch (equation.Size()) {
     case 1:
@@ -107,6 +108,18 @@ auto Solve(const Polynomial& equation) -> Solution
         throw std::runtime_error("No general solution for polynomials of order >= 4. "
                                  "Iterative solution is not implemented");
     }
+}
+
+} // namespace
+
+namespace solver
+{
+
+auto Solve(const std::string& equation) -> Solution
+{
+    auto polynomial = Parse(equation);
+    auto solutions = SolvePolynomial(polynomial);
+    return solutions;
 }
 
 } // namespace solver

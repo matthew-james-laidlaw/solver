@@ -5,8 +5,8 @@
 #include <combinator/state.h>
 #include <grammar.h>
 #include <monomial.h>
+#include <parser.h>
 #include <polynomial.h>
-#include <solver/parser.h>
 #include <token.h>
 
 #include <span>

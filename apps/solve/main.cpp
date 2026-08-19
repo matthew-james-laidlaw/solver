@@ -1,7 +1,7 @@
 #include <CLI/CLI.hpp>
 
+#include <parser.h>
 #include <solver/solver.h>
-#include <solver/parser.h>
 
 #include <complex>
 #include <exception>
@@ -27,8 +27,7 @@ auto main(int argc, char** argv) -> int
     std::cout << std::format("Solving for: '{}'", function) << '\n';
 
     try {
-        auto tokens = solver::Parse(function);
-        auto solutions = solver::Solve(tokens);
+        auto solutions = solver::Solve(function);
 
         if (solutions.empty()) {
             std::cout << "There are no solutions!" << '\n';

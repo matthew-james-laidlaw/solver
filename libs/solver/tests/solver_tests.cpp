@@ -9,6 +9,7 @@
 #include <string>
 
 using namespace solver;
+using namespace std::string_literals;
 
 auto AssertSolutionsEquivalent(const Solution& a, const Solution& b,
                                double tolerance = 1e-9) -> void
@@ -44,7 +45,7 @@ auto AssertSolutionsEquivalent(const Solution& a, const Solution& b,
 
 TEST(SolverTests, constant_function_has_no_solutions)
 {
-    auto equation = Polynomial({5}); // f(x) = 5
+    auto equation = "f(x) = 5"s;
 
     auto expected_solution = Solution{};
     auto actual_solution = Solve(equation);
@@ -54,7 +55,7 @@ TEST(SolverTests, constant_function_has_no_solutions)
 
 TEST(SolverTests, solve_first_order_polynomial)
 {
-    auto equation = Polynomial({5, 3}); // f(x) = 3x + 5
+    auto equation = "f(x) = 3x + 5"s;
 
     auto expected_solution = Solution{-5.0 / 3.0};
     auto actual_solution = Solve(equation);
@@ -64,7 +65,7 @@ TEST(SolverTests, solve_first_order_polynomial)
 
 TEST(SolverTests, solve_second_order_polynomial)
 {
-    auto equation = Polynomial({2, -3, 1}); // f(x) = x^2 - 3x + 1
+    auto equation = "f(x) = x^2 - 3x + 2"s;
 
     auto expected_solution = Solution{2.0, 1.0};
     auto actual_solution = Solve(equation);
@@ -74,7 +75,7 @@ TEST(SolverTests, solve_second_order_polynomial)
 
 TEST(SolverTests, solve_third_order_polynomial)
 {
-    auto equation = Polynomial({-6, 11, -6, 1}); // f(x) = x^3 - 6x^2 + 11x - 6
+    auto equation = "f(x) = x^3 - 6x^2 + 11x - 6"s;
 
     auto expected_solution = Solution{3.0, 2.0, 1.0};
     auto actual_solution = Solve(equation);

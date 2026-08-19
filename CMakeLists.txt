@@ -23,6 +23,12 @@ cpm_add_cli11()
 cpm_add_googletest()
 cpm_add_spdlog()
 
+# --- global flags ---
+if(MSVC)
+    add_compile_options(/W4 /WX)
+endif()
+
+# --- unit test setup ---
 enable_testing()
 include(GoogleTest)
 
