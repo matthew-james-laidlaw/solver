@@ -11,17 +11,17 @@ namespace combinator
 /** @brief The outcome of running a parser. On success, holds a value and the remaining
  * state. On failure, holds the remaining state and an error message.
  */
-template <typename T>
+template <typename T, typename TokenType>
 class Result
 {
 private:
 
     bool m_ok;
     std::optional<T> m_value;
-    State m_rest;
+    State<TokenType> m_rest;
     std::string m_message;
 
-    Result(bool ok, std::optional<T> value, State rest, std::string message)
+    Result(bool ok, std::optional<T> value, State<TokenType> rest, std::string message)
         : m_ok(ok), m_value(value), m_rest(rest), m_message(message)
     {}
 
@@ -29,14 +29,14 @@ public:
 
     /** @brief Named constructor for a successful result
      */
-    static auto Success(T value, State rest) -> Result
+    static auto Success(T value, State<TokenType> rest) -> Result
     {
         return Result(true, std::move(value), rest, "");
     }
 
     /** @brief Named constructor for a failed result
      */
-    static auto Failure(State rest, std::string message) -> Result
+    static auto Failure(State<TokenType> rest, std::string message) -> Result
     {
         return Result(false, std::nullopt, rest, message);
     }
@@ -56,7 +56,7 @@ public:
         return *m_value;
     }
 
-    auto Rest() -> State
+    auto Rest() -> State<TokenType>
     {
         return m_rest;
     }

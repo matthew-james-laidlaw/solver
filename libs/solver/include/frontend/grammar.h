@@ -4,7 +4,7 @@
 
 #include <backend/monomial.h>
 #include <combinator/combinator.h>
-#include <combinator/token.h>
+#include <frontend/token.h>
 
 #include <optional>
 #include <vector>
@@ -16,15 +16,15 @@ namespace solver
  |     Parser Primitives     |
  * ------------------------- */
 
-inline auto Variable = Expect(combinator::Token::Type::Variable, "a variable");
-inline auto Caret    = Expect(combinator::Token::Type::Caret, "'^'");
-inline auto Plus     = Expect(combinator::Token::Type::Plus, "'+'");
-inline auto Minus    = Expect(combinator::Token::Type::Minus, "'-'");
-inline auto Function = Expect(combinator::Token::Type::Function, "'f(x)'");
-inline auto Equals   = Expect(combinator::Token::Type::Equals, "'='");
+inline auto Variable = combinator::Expect<Token>(Token::Type::Variable, "a variable");
+inline auto Caret    = combinator::Expect<Token>(Token::Type::Caret, "'^'");
+inline auto Plus     = combinator::Expect<Token>(Token::Type::Plus, "'+'");
+inline auto Minus    = combinator::Expect<Token>(Token::Type::Minus, "'-'");
+inline auto Function = combinator::Expect<Token>(Token::Type::Function, "'f(x)'");
+inline auto Equals   = combinator::Expect<Token>(Token::Type::Equals, "'='");
 
-inline auto ToInt = [](combinator::Token token) -> int { return std::stoi(token.lexeme); };
-inline auto Number = Expect(combinator::Token::Type::Number, "a number").Map(ToInt);
+inline auto ToInt = [](Token token) -> int { return std::stoi(token.lexeme); };
+inline auto Number = combinator::Expect<Token>(Token::Type::Number, "a number").Map(ToInt);
 
 /* --------------------- *
  |     Grammar Rules     |
@@ -89,7 +89,7 @@ inline auto BinaryParser =
     .Map([](auto&& args) -> Monomial
     {
         auto& [op, monomial] = args;
-        return op.type == combinator::Token::Type::Minus ? -monomial : monomial;
+        return op.type == Token::Type::Minus ? -monomial : monomial;
     });
 
 /** @brief Parses the grammar rule:

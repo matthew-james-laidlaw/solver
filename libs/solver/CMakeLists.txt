@@ -5,6 +5,7 @@ cpm_add_component(solver
         src/solver.cpp
         src/lexer.cpp
         src/parser.cpp
+        src/token.cpp
     TEST_SOURCES
         tests/lexer_tests.cpp
         tests/parser_tests.cpp

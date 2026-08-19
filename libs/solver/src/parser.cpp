@@ -1,10 +1,10 @@
 #include <backend/polynomial.h>
 #include <combinator/parser.h>
 #include <combinator/result.h>
-#include <combinator/token.h>
 #include <frontend/grammar.h>
 #include <frontend/lexer.h>
 #include <frontend/parser.h>
+#include <frontend/token.h>
 
 #include <format>
 #include <span>
@@ -15,9 +15,9 @@
 namespace solver
 {
 
-auto Parse(const std::vector<combinator::Token>& source) -> Polynomial
+auto Parse(const std::vector<Token>& source) -> Polynomial
 {
-    std::span<const combinator::Token> state(source);
+    std::span<const Token> state(source);
     auto result = EquationParser(state);
     if (!result.Succeeded()) {
         throw std::runtime_error(result.Message());

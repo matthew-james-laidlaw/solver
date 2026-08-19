@@ -17,57 +17,57 @@ auto TrimLeadingWhitespace(std::string_view& state) -> void
     state.remove_prefix(prefix);
 }
 
-auto LexFunction(std::string_view& state) -> combinator::Token
+auto LexFunction(std::string_view& state) -> solver::Token
 {
-    auto result = combinator::Token{
-        .type = combinator::Token::Type::Function,
+    auto result = solver::Token{
+        .type = solver::Token::Type::Function,
         .lexeme = "f(x)",
     };
     state.remove_prefix("f(x)"s.size());
     return result;
 }
 
-auto LexEquals(std::string_view& state) -> combinator::Token
+auto LexEquals(std::string_view& state) -> solver::Token
 {
-    auto result = combinator::Token{
-        .type = combinator::Token::Type::Equals,
+    auto result = solver::Token{
+        .type = solver::Token::Type::Equals,
         .lexeme = "=",
     };
     state.remove_prefix(1);
     return result;
 }
 
-auto LexPlus(std::string_view& state) -> combinator::Token
+auto LexPlus(std::string_view& state) -> solver::Token
 {
-    auto result = combinator::Token{
-        .type = combinator::Token::Type::Plus,
+    auto result = solver::Token{
+        .type = solver::Token::Type::Plus,
         .lexeme = "+",
     };
     state.remove_prefix(1);
     return result;
 }
 
-auto LexMinus(std::string_view& state) -> combinator::Token
+auto LexMinus(std::string_view& state) -> solver::Token
 {
-    auto result = combinator::Token{
-        .type = combinator::Token::Type::Minus,
+    auto result = solver::Token{
+        .type = solver::Token::Type::Minus,
         .lexeme = "-",
     };
     state.remove_prefix(1);
     return result;
 }
 
-auto LexCaret(std::string_view& state) -> combinator::Token
+auto LexCaret(std::string_view& state) -> solver::Token
 {
-    auto result = combinator::Token{
-        .type = combinator::Token::Type::Caret,
+    auto result = solver::Token{
+        .type = solver::Token::Type::Caret,
         .lexeme = "^",
     };
     state.remove_prefix(1);
     return result;
 }
 
-auto LexNumber(std::string_view& state) -> combinator::Token
+auto LexNumber(std::string_view& state) -> solver::Token
 {
     auto number_end = state.find_first_not_of("0123456789");
     auto lexeme = ""s;
@@ -79,16 +79,16 @@ auto LexNumber(std::string_view& state) -> combinator::Token
         lexeme = state.substr(0, number_end);
         state.remove_prefix(number_end);
     }
-    return combinator::Token{
-        .type = combinator::Token::Type::Number,
+    return solver::Token{
+        .type = solver::Token::Type::Number,
         .lexeme = lexeme,
     };
 }
 
-auto LexVariable(std::string_view& state) -> combinator::Token
+auto LexVariable(std::string_view& state) -> solver::Token
 {
-    auto result = combinator::Token{
-        .type = combinator::Token::Type::Variable,
+    auto result = solver::Token{
+        .type = solver::Token::Type::Variable,
         .lexeme = "x",
     };
     state.remove_prefix(1);
@@ -100,10 +100,10 @@ auto LexVariable(std::string_view& state) -> combinator::Token
 namespace solver
 {
 
-auto Lex(const std::string& source) -> std::vector<combinator::Token>
+auto Lex(const std::string& source) -> std::vector<solver::Token>
 {
     auto state = std::string_view(source);
-    auto tokens = std::vector<combinator::Token>{};
+    auto tokens = std::vector<solver::Token>{};
 
     while (!state.empty()) {
         TrimLeadingWhitespace(state);
