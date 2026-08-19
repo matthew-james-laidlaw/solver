@@ -1,10 +1,11 @@
 cpm_add_component(solver
     SOURCES
+        src/grammar.cpp
+        src/lexer.cpp
         src/monomial.cpp
+        src/parser.cpp
         src/polynomial.cpp
         src/solver.cpp
-        src/lexer.cpp
-        src/parser.cpp
         src/token.cpp
     TEST_SOURCES
         tests/lexer_tests.cpp

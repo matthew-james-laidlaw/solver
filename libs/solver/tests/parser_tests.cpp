@@ -21,7 +21,7 @@ TEST(ParserTests, parse_power_no_exponent)
 
     combinator::State<Token> state(source);
 
-    auto result = PowerParser(state);
+    auto result = PowerParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -43,7 +43,7 @@ TEST(ParserTests, parse_power_with_exponent)
 
     combinator::State<Token> state(source);
 
-    auto result = PowerParser(state);
+    auto result = PowerParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -63,7 +63,7 @@ TEST(ParserTests, parse_term_constant)
 
     combinator::State<Token> state(source);
 
-    auto result = TermParser(state);
+    auto result = TermParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -83,7 +83,7 @@ TEST(ParserTests, parse_term_variable)
 
     combinator::State<Token> state(source);
 
-    auto result = TermParser(state);
+    auto result = TermParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -106,7 +106,7 @@ TEST(ParserTests, parse_term_monomial)
 
     combinator::State<Token> state(source);
 
-    auto result = TermParser(state);
+    auto result = TermParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -129,7 +129,7 @@ TEST(ParserTests, parse_unary_positive)
 
     combinator::State<Token> state(source);
 
-    auto result = UnaryParser(state);
+    auto result = UnaryParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -153,7 +153,7 @@ TEST(ParserTests, parse_unary_negative)
 
     combinator::State<Token> state(source);
 
-    auto result = UnaryParser(state);
+    auto result = UnaryParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -176,7 +176,7 @@ TEST(ParserTests, parse_expression_term)
 
     combinator::State<Token> state(source);
 
-    auto result = ExpressionParser(state);
+    auto result = ExpressionParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -205,7 +205,7 @@ TEST(ParserTests, parse_expression_plus)
 
     combinator::State<Token> state(source);
 
-    auto result = ExpressionParser(state);
+    auto result = ExpressionParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
@@ -236,7 +236,7 @@ TEST(ParserTests, parse_expression_minus)
 
     combinator::State<Token> state(source);
 
-    auto result = ExpressionParser(state);
+    auto result = ExpressionParser()(state);
 
     ASSERT_TRUE(result.Succeeded());
 
