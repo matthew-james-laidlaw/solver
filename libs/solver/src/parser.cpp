@@ -1,10 +1,10 @@
-#include <backend/polynomial.h>
 #include <combinator/parser.h>
 #include <combinator/result.h>
-#include <frontend/grammar.h>
-#include <frontend/lexer.h>
-#include <frontend/parser.h>
-#include <frontend/token.h>
+#include <grammar.h>
+#include <lexer.h>
+#include <polynomial.h>
+#include <solver/parser.h>
+#include <token.h>
 
 #include <format>
 #include <span>

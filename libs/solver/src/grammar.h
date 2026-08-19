@@ -1,8 +1,8 @@
 #pragma once
 
-#include <backend/monomial.h>
 #include <combinator/combinator.h>
-#include <frontend/token.h>
+#include <monomial.h>
+#include <token.h>
 
 #include <vector>
 

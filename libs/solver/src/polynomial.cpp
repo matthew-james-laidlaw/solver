@@ -1,5 +1,5 @@
-#include <backend/monomial.h>
-#include <backend/polynomial.h>
+#include <monomial.h>
+#include <polynomial.h>
 
 #include <algorithm>
 #include <cstddef>

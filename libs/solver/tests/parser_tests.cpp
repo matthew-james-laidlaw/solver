@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
-#include <backend/monomial.h>
-#include <backend/polynomial.h>
 #include <combinator/parser.h>
 #include <combinator/result.h>
 #include <combinator/state.h>
-#include <frontend/grammar.h>
-#include <frontend/parser.h>
-#include <frontend/token.h>
+#include <grammar.h>
+#include <monomial.h>
+#include <polynomial.h>
+#include <solver/parser.h>
+#include <token.h>
 
 #include <span>
 #include <string>

@@ -1,8 +1,7 @@
-#include <frontend/grammar.h>
-
-#include <backend/monomial.h>
 #include <combinator/combinator.h>
-#include <frontend/token.h>
+#include <grammar.h>
+#include <monomial.h>
+#include <token.h>
 
 #include <optional>
 #include <string>
@@ -63,7 +62,8 @@ auto ToInt(Token token) -> int
 
 auto Number() -> const combinator::Parser<int, Token>&
 {
-    static auto parser = combinator::Expect<Token>(Token::Type::Number, "a number").Map(ToInt);
+    static auto parser =
+        combinator::Expect<Token>(Token::Type::Number, "a number").Map(ToInt);
     return parser;
 }
 
@@ -73,37 +73,36 @@ auto Number() -> const combinator::Parser<int, Token>&
 
 auto PowerParser() -> const combinator::Parser<Monomial, Token>&
 {
-    static auto parser =
-        (Variable() >> Maybe(Caret() >> Number()))
-        .Map([](std::optional<int> exponent) -> Monomial
-        {
-            return Monomial::Variable(exponent.value_or(1));
-        });
+    static auto parser = (Variable() >> Maybe(Caret() >> Number()))
+                             .Map([](std::optional<int> exponent) -> Monomial
+                                  { return Monomial::Variable(exponent.value_or(1)); });
     return parser;
 }
 
 auto TermParser() -> const combinator::Parser<Monomial, Token>&
 {
-    static auto parser =
-        (Number() & Maybe(PowerParser()))
-        .Map([](auto&& args) -> Monomial
-        {
-            auto& [coefficient, power] = args;
-            return power ? Monomial(coefficient, power->Exponent()) : Monomial::Constant(coefficient);
-        })
-        | PowerParser();
+    static auto parser = (Number() & Maybe(PowerParser()))
+                             .Map(
+                                 [](auto&& args) -> Monomial
+                                 {
+                                     auto& [coefficient, power] = args;
+                                     return power
+                                                ? Monomial(coefficient, power->Exponent())
+                                                : Monomial::Constant(coefficient);
+                                 }) |
+                         PowerParser();
     return parser;
 }
 
 auto UnaryParser() -> const combinator::Parser<Monomial, Token>&
 {
-    static auto parser =
-        (Maybe(Minus()) & TermParser())
-        .Map([](auto&& args) -> Monomial
-        {
-            auto& [minus, term] = args;
-            return minus ? -term : term;
-        });
+    static auto parser = (Maybe(Minus()) & TermParser())
+                             .Map(
+                                 [](auto&& args) -> Monomial
+                                 {
+                                     auto& [minus, term] = args;
+                                     return minus ? -term : term;
+                                 });
     return parser;
 }
 
@@ -111,24 +110,25 @@ auto BinaryParser() -> const combinator::Parser<Monomial, Token>&
 {
     static auto parser =
         ((Plus() | Minus()) & UnaryParser())
-        .Map([](auto&& args) -> Monomial
-        {
-            auto& [op, monomial] = args;
-            return op.type == Token::Type::Minus ? -monomial : monomial;
-        });
+            .Map(
+                [](auto&& args) -> Monomial
+                {
+                    auto& [op, monomial] = args;
+                    return op.type == Token::Type::Minus ? -monomial : monomial;
+                });
     return parser;
 }
 
 auto ExpressionParser() -> const combinator::Parser<std::vector<Monomial>, Token>&
 {
-    static auto parser =
-        (UnaryParser() & *BinaryParser())
-        .Map([](auto&& args) -> std::vector<Monomial>
-        {
-            auto [first, rest] = args;
-            rest.insert(rest.begin(), first);
-            return rest;
-        });
+    static auto parser = (UnaryParser() & *BinaryParser())
+                             .Map(
+                                 [](auto&& args) -> std::vector<Monomial>
+                                 {
+                                     auto [first, rest] = args;
+                                     rest.insert(rest.begin(), first);
+                                     return rest;
+                                 });
     return parser;
 }
 

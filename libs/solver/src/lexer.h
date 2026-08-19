@@ -1,6 +1,6 @@
 #pragma once
 
-#include <frontend/token.h>
+#include <token.h>
 
 #include <string>
 #include <vector>

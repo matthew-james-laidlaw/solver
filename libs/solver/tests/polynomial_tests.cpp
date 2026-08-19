@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <backend/monomial.h>
-#include <backend/polynomial.h>
+#include <monomial.h>
+#include <polynomial.h>
 
 #include <initializer_list>
 #include <vector>

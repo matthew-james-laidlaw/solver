@@ -1,7 +1,7 @@
 #include <CLI/CLI.hpp>
 
-#include <backend/solver.h>
-#include <frontend/parser.h>
+#include <solver/solver.h>
+#include <solver/parser.h>
 
 #include <complex>
 #include <exception>
