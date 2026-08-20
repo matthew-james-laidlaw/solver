@@ -49,8 +49,9 @@ TEST(SolverTests, constant_function_has_no_solutions)
 
     auto expected_solution = Solution{};
     auto actual_solution = Solve(equation);
+    ASSERT_TRUE(actual_solution);
 
-    AssertSolutionsEquivalent(expected_solution, actual_solution);
+    AssertSolutionsEquivalent(expected_solution, *actual_solution);
 }
 
 TEST(SolverTests, solve_first_order_polynomial)
@@ -59,8 +60,9 @@ TEST(SolverTests, solve_first_order_polynomial)
 
     auto expected_solution = Solution{-5.0 / 3.0};
     auto actual_solution = Solve(equation);
+    ASSERT_TRUE(actual_solution);
 
-    AssertSolutionsEquivalent(expected_solution, actual_solution);
+    AssertSolutionsEquivalent(expected_solution, *actual_solution);
 }
 
 TEST(SolverTests, solve_second_order_polynomial)
@@ -69,8 +71,9 @@ TEST(SolverTests, solve_second_order_polynomial)
 
     auto expected_solution = Solution{2.0, 1.0};
     auto actual_solution = Solve(equation);
+    ASSERT_TRUE(actual_solution);
 
-    AssertSolutionsEquivalent(expected_solution, actual_solution);
+    AssertSolutionsEquivalent(expected_solution, *actual_solution);
 }
 
 TEST(SolverTests, solve_third_order_polynomial)
@@ -79,8 +82,9 @@ TEST(SolverTests, solve_third_order_polynomial)
 
     auto expected_solution = Solution{3.0, 2.0, 1.0};
     auto actual_solution = Solve(equation);
+    ASSERT_TRUE(actual_solution);
 
-    AssertSolutionsEquivalent(expected_solution, actual_solution);
+    AssertSolutionsEquivalent(expected_solution, *actual_solution);
 }
 
 TEST(SolverTests, DISABLED_solve_fourth_order_polynomial)

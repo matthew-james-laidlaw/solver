@@ -16,7 +16,7 @@ auto ZeroExtend(const solver::Polynomial& p, size_t n) -> solver::Polynomial
         return p;
     }
 
-    auto extended = solver::Polynomial(std::vector<int>(n, 0));
+    auto extended = solver::Polynomial::FromCoeffs(std::vector<int>(n, 0));
     for (size_t i = 0; i < p.Size(); ++i) {
         extended[i] = p[i];
     }
@@ -29,33 +29,38 @@ auto ZeroExtend(const solver::Polynomial& p, size_t n) -> solver::Polynomial
 namespace solver
 {
 
-Polynomial::Polynomial(const std::vector<Monomial>& monomials)
+auto Polynomial::FromTerms(std::vector<Monomial> terms) -> Polynomial
 {
-    if (monomials.size() == 0) {
+    if (terms.size() == 0) {
         throw std::runtime_error(
             "a polynomial cannot be constructed with an empty list of monomials");
     }
 
     int order = 0;
-    for (auto term : monomials) {
+    for (auto term : terms) {
         order = std::max(order, term.Exponent());
     }
 
-    m_terms = std::vector<int>(order + 1, 0);
-    for (auto term : monomials) {
+    Polynomial polynomial;
+    polynomial.m_terms = std::vector<int>(order + 1, 0);
+    for (auto term : terms) {
         if (term.Exponent() >= 0) {
-            m_terms[term.Exponent()] += term.Coefficient();
+            polynomial.m_terms[term.Exponent()] += term.Coefficient();
         }
     }
+
+    return polynomial;
 }
 
-Polynomial::Polynomial(std::vector<int> coeffs)
-    : m_terms(coeffs)
+auto Polynomial::FromCoeffs(std::vector<int> coeffs) -> Polynomial
 {
+    Polynomial polynomial;
+    polynomial.m_terms = coeffs;
     if (coeffs.size() == 0) {
         throw std::runtime_error(
             "a polynomial cannot be constructed with an empty list of coefficients");
     }
+    return polynomial;
 }
 
 auto Polynomial::operator[](size_t i) const -> int
@@ -89,7 +94,7 @@ auto operator+(const Polynomial& a, const Polynomial& b) -> Polynomial
     auto aa = ZeroExtend(a, n);
     auto bb = ZeroExtend(b, n);
 
-    auto c = Polynomial(std::vector<int>(n, 0));
+    auto c = Polynomial::FromCoeffs(std::vector<int>(n, 0));
 
     for (size_t i = 0; i < n; ++i) {
         c[i] = aa[i] + bb[i];
@@ -105,7 +110,7 @@ auto operator-(const Polynomial& a, const Polynomial& b) -> Polynomial
     auto aa = ZeroExtend(a, n);
     auto bb = ZeroExtend(b, n);
 
-    auto c = Polynomial(std::vector<int>(n, 0));
+    auto c = Polynomial::FromCoeffs(std::vector<int>(n, 0));
 
     for (size_t i = 0; i < n; ++i) {
         c[i] = aa[i] - bb[i];
@@ -121,7 +126,7 @@ auto operator*(const Polynomial& a, const Polynomial& b) -> Polynomial
     auto aa = ZeroExtend(a, n);
     auto bb = ZeroExtend(b, n);
 
-    auto c = Polynomial(std::vector<int>(n, 0));
+    auto c = Polynomial::FromCoeffs(std::vector<int>(n, 0));
 
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j <= i; ++j) {

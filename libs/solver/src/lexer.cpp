@@ -100,7 +100,7 @@ auto LexVariable(std::string_view& state) -> solver::Token
 namespace solver
 {
 
-auto Lex(const std::string& source) -> std::vector<solver::Token>
+auto Lex(const std::string& source) -> std::expected<std::vector<Token>, Error>
 {
     auto state = std::string_view(source);
     auto tokens = std::vector<solver::Token>{};
@@ -133,7 +133,7 @@ auto Lex(const std::string& source) -> std::vector<solver::Token>
             tokens.push_back(LexVariable(state));
         }
         else {
-            throw std::runtime_error("lexer error");
+            return std::unexpected(Error(Error::Type::LexerError, "lexer error"));
         }
     }
 

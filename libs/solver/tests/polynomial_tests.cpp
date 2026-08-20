@@ -39,13 +39,14 @@ TEST(PolynomialTests, negate_monomial)
 TEST(PolynomialTests, construct_polynomial_from_empty_monomial_list)
 {
     const auto monomials = std::vector<Monomial>{};
-    ASSERT_THROW(const auto polynomial = Polynomial(monomials), std::runtime_error);
+    ASSERT_THROW(const auto polynomial = Polynomial::FromTerms(monomials),
+                 std::runtime_error);
 }
 
 TEST(PolynomialTests, construct_polynomial_from_monomials)
 {
     const auto monomials = std::vector<Monomial>{{3, 5}};
-    const auto polynomial = Polynomial(monomials);
+    const auto polynomial = Polynomial::FromTerms(monomials);
 
     ASSERT_EQ(polynomial.Size(), 6);
     ASSERT_EQ(polynomial[0], 0);
@@ -58,13 +59,12 @@ TEST(PolynomialTests, construct_polynomial_from_monomials)
 
 TEST(PolynomialTests, construct_polynomial_from_empty_coefficient_list)
 {
-    ASSERT_THROW(const auto polynomial = Polynomial(std::initializer_list<int>{}),
-                 std::runtime_error);
+    ASSERT_THROW(const auto polynomial = Polynomial::FromCoeffs({}), std::runtime_error);
 }
 
 TEST(PolynomialTests, construct_polynomial_from_coefficients)
 {
-    const auto polynomial = Polynomial({1, 2, 3});
+    const auto polynomial = Polynomial::FromCoeffs({1, 2, 3});
 
     ASSERT_EQ(polynomial.Size(), 3);
     ASSERT_EQ(polynomial[0], 1);
@@ -74,15 +74,15 @@ TEST(PolynomialTests, construct_polynomial_from_coefficients)
 
 TEST(PolynomialTests, polynomial_bounds_checking)
 {
-    const auto polynomial = Polynomial(std::vector<int>(3, 0));
+    const auto polynomial = Polynomial::FromCoeffs({0, 0, 0});
     ASSERT_THROW(polynomial[10], std::runtime_error);
 }
 
 TEST(PolynomialTests, add_polynomials)
 {
     {
-        const auto p1 = Polynomial({1, 2, 3});
-        const auto p2 = Polynomial({4, 5, 6});
+        const auto p1 = Polynomial::FromCoeffs({1, 2, 3});
+        const auto p2 = Polynomial::FromCoeffs({4, 5, 6});
         const auto p3 = p1 + p2;
         ASSERT_EQ(p3.Size(), 3);
         ASSERT_EQ(p3[0], 5);
@@ -91,8 +91,8 @@ TEST(PolynomialTests, add_polynomials)
     }
 
     {
-        const auto p1 = Polynomial({1, 2, 3});
-        const auto p2 = Polynomial({4, 5});
+        const auto p1 = Polynomial::FromCoeffs({1, 2, 3});
+        const auto p2 = Polynomial::FromCoeffs({4, 5});
         const auto p3 = p1 + p2;
         ASSERT_EQ(p3.Size(), 3);
         ASSERT_EQ(p3[0], 5);
@@ -101,8 +101,8 @@ TEST(PolynomialTests, add_polynomials)
     }
 
     {
-        const auto p1 = Polynomial({1, 2});
-        const auto p2 = Polynomial({4, 5, 6});
+        const auto p1 = Polynomial::FromCoeffs({1, 2});
+        const auto p2 = Polynomial::FromCoeffs({4, 5, 6});
         const auto p3 = p1 + p2;
         ASSERT_EQ(p3.Size(), 3);
         ASSERT_EQ(p3[0], 5);
@@ -114,8 +114,8 @@ TEST(PolynomialTests, add_polynomials)
 TEST(PolynomialTests, subtract_polynomials)
 {
     {
-        const auto p1 = Polynomial({3, 2, 1});
-        const auto p2 = Polynomial({4, 5, 6});
+        const auto p1 = Polynomial::FromCoeffs({3, 2, 1});
+        const auto p2 = Polynomial::FromCoeffs({4, 5, 6});
         const auto p3 = p2 - p1;
         ASSERT_EQ(p3.Size(), 3);
         ASSERT_EQ(p3[0], 1);
@@ -124,8 +124,8 @@ TEST(PolynomialTests, subtract_polynomials)
     }
 
     {
-        const auto p1 = Polynomial({3, 2, 1});
-        const auto p2 = Polynomial({4, 5});
+        const auto p1 = Polynomial::FromCoeffs({3, 2, 1});
+        const auto p2 = Polynomial::FromCoeffs({4, 5});
         const auto p3 = p2 - p1;
         ASSERT_EQ(p3.Size(), 3);
         ASSERT_EQ(p3[0], 1);
@@ -134,8 +134,8 @@ TEST(PolynomialTests, subtract_polynomials)
     }
 
     {
-        const auto p1 = Polynomial({3, 2});
-        const auto p2 = Polynomial({4, 5, 6});
+        const auto p1 = Polynomial::FromCoeffs({3, 2});
+        const auto p2 = Polynomial::FromCoeffs({4, 5, 6});
         const auto p3 = p2 - p1;
         ASSERT_EQ(p3.Size(), 3);
         ASSERT_EQ(p3[0], 1);
@@ -147,8 +147,8 @@ TEST(PolynomialTests, subtract_polynomials)
 TEST(PolynomialTests, multiply_polynomials)
 {
     {
-        const auto p1 = Polynomial({1, 2, 3});
-        const auto p2 = Polynomial({4, 5, 6});
+        const auto p1 = Polynomial::FromCoeffs({1, 2, 3});
+        const auto p2 = Polynomial::FromCoeffs({4, 5, 6});
         const auto p3 = p2 * p1;
         ASSERT_EQ(p3.Size(), 5);
         ASSERT_EQ(p3[0], 4);
@@ -159,8 +159,8 @@ TEST(PolynomialTests, multiply_polynomials)
     }
 
     {
-        const auto p1 = Polynomial({1, 2, 3});
-        const auto p2 = Polynomial({4, 5});
+        const auto p1 = Polynomial::FromCoeffs({1, 2, 3});
+        const auto p2 = Polynomial::FromCoeffs({4, 5});
         const auto p3 = p2 * p1;
         ASSERT_EQ(p3.Size(), 4);
         ASSERT_EQ(p3[0], 4);
@@ -170,8 +170,8 @@ TEST(PolynomialTests, multiply_polynomials)
     }
 
     {
-        const auto p1 = Polynomial({1, 2});
-        const auto p2 = Polynomial({4, 5, 6});
+        const auto p1 = Polynomial::FromCoeffs({1, 2});
+        const auto p2 = Polynomial::FromCoeffs({4, 5, 6});
         const auto p3 = p2 * p1;
         ASSERT_EQ(p3.Size(), 4);
         ASSERT_EQ(p3[0], 4);

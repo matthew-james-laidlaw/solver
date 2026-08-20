@@ -273,7 +273,9 @@ TEST(ParserTests, parse_polynomial)
         {.type = Token::Type::Number, .lexeme = "2"},
     };
 
-    auto polynomial = Parse(source);
+    auto maybe_polynomial = Parse(source);
+    ASSERT_TRUE(maybe_polynomial);
+    auto polynomial = *maybe_polynomial;
 
     // polynomial creation will have sorted and combined like terms and added 0 terms for
     // powers of 0 and 1.

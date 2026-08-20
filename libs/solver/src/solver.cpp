@@ -91,7 +91,8 @@ auto SolveFourthOrder(const solver::Polynomial& equation) -> solver::Solution
     throw std::runtime_error("fourth order solving not implemented");
 }
 
-auto SolvePolynomial(const solver::Polynomial& equation) -> solver::Solution
+auto SolvePolynomial(const solver::Polynomial& equation)
+    -> std::expected<solver::Solution, solver::Error>
 {
     switch (equation.Size()) {
     case 1:
@@ -115,10 +116,14 @@ auto SolvePolynomial(const solver::Polynomial& equation) -> solver::Solution
 namespace solver
 {
 
-auto Solve(const std::string& equation) -> Solution
+auto Solve(const std::string& equation) -> std::expected<Solution, Error>
 {
     auto polynomial = Parse(equation);
-    auto solutions = SolvePolynomial(polynomial);
+    if (!polynomial) {
+        return std::unexpected(polynomial.error());
+    }
+
+    auto solutions = SolvePolynomial(*polynomial);
     return solutions;
 }
 

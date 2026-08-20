@@ -129,5 +129,7 @@ TEST(LexerTests, lex_polynomial)
 TEST(LexerTests, lex_failure)
 {
     auto source = "z";
-    ASSERT_THROW(Lex(source), std::runtime_error);
+    auto result = Lex(source);
+    ASSERT_FALSE(result);
+    ASSERT_EQ(result.error(), Error(Error::Type::LexerError, "lexer error"));
 }
