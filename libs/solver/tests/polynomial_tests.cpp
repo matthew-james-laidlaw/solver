@@ -38,16 +38,13 @@ TEST(PolynomialTests, negate_monomial)
 
 TEST(PolynomialTests, construct_polynomial_from_empty_monomial_list)
 {
-    const auto monomials = std::vector<Monomial>{};
-    ASSERT_THROW(const auto polynomial = Polynomial::FromTerms(monomials),
-                 std::runtime_error);
+    const auto polynomial = Polynomial::FromTerms({});
+    ASSERT_EQ(polynomial.Size(), 0);
 }
 
 TEST(PolynomialTests, construct_polynomial_from_monomials)
 {
-    const auto monomials = std::vector<Monomial>{{3, 5}};
-    const auto polynomial = Polynomial::FromTerms(monomials);
-
+    const auto polynomial = Polynomial::FromTerms({{3, 5}});
     ASSERT_EQ(polynomial.Size(), 6);
     ASSERT_EQ(polynomial[0], 0);
     ASSERT_EQ(polynomial[1], 0);
@@ -59,23 +56,17 @@ TEST(PolynomialTests, construct_polynomial_from_monomials)
 
 TEST(PolynomialTests, construct_polynomial_from_empty_coefficient_list)
 {
-    ASSERT_THROW(const auto polynomial = Polynomial::FromCoeffs({}), std::runtime_error);
+    const auto polynomial = Polynomial::FromCoeffs({});
+    ASSERT_EQ(polynomial.Size(), 0);
 }
 
 TEST(PolynomialTests, construct_polynomial_from_coefficients)
 {
     const auto polynomial = Polynomial::FromCoeffs({1, 2, 3});
-
     ASSERT_EQ(polynomial.Size(), 3);
     ASSERT_EQ(polynomial[0], 1);
     ASSERT_EQ(polynomial[1], 2);
     ASSERT_EQ(polynomial[2], 3);
-}
-
-TEST(PolynomialTests, polynomial_bounds_checking)
-{
-    const auto polynomial = Polynomial::FromCoeffs({0, 0, 0});
-    ASSERT_THROW(polynomial[10], std::runtime_error);
 }
 
 TEST(PolynomialTests, add_polynomials)

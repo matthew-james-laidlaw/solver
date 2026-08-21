@@ -13,9 +13,6 @@ namespace
 
 auto SolveFirstOrder(const solver::Polynomial& equation) -> solver::Solution
 {
-    if (equation.Size() != 2) {
-        throw std::runtime_error("expected a first order polynomial");
-    }
     auto a = (double)equation[1];
     auto b = (double)equation[0];
     return {-b / a};
@@ -23,10 +20,6 @@ auto SolveFirstOrder(const solver::Polynomial& equation) -> solver::Solution
 
 auto SolveSecondOrder(const solver::Polynomial& equation) -> solver::Solution
 {
-    if (equation.Size() != 3) {
-        throw std::runtime_error("expected a second order polynomial");
-    }
-
     auto a = static_cast<std::complex<double>>(equation[2]);
     auto b = static_cast<std::complex<double>>(equation[1]);
     auto c = static_cast<std::complex<double>>(equation[0]);
@@ -42,10 +35,6 @@ auto SolveSecondOrder(const solver::Polynomial& equation) -> solver::Solution
 
 auto SolveThirdOrder(const solver::Polynomial& equation) -> solver::Solution
 {
-    if (equation.Size() != 4) {
-        throw std::runtime_error("expected a third order polynomial");
-    }
-
     auto a = static_cast<std::complex<double>>(equation[3]);
     auto b = static_cast<std::complex<double>>(equation[2]);
     auto c = static_cast<std::complex<double>>(equation[1]);
@@ -83,14 +72,6 @@ auto SolveThirdOrder(const solver::Polynomial& equation) -> solver::Solution
     return {x_0, x_1, x_2};
 }
 
-auto SolveFourthOrder(const solver::Polynomial& equation) -> solver::Solution
-{
-    if (equation.Size() != 5) {
-        throw std::runtime_error("expected a fourth order polynomial");
-    }
-    throw std::runtime_error("fourth order solving not implemented");
-}
-
 auto SolvePolynomial(const solver::Polynomial& equation)
     -> std::expected<solver::Solution, solver::Error>
 {
@@ -104,10 +85,13 @@ auto SolvePolynomial(const solver::Polynomial& equation)
     case 4:
         return SolveThirdOrder(equation);
     case 5:
-        return SolveFourthOrder(equation);
+        return std::unexpected(
+            solver::Error(solver::Error::Type::NotImplemented,
+                          "solving for polynomials of order 4 is not implemented"));
     default:
-        throw std::runtime_error("No general solution for polynomials of order >= 4. "
-                                 "Iterative solution is not implemented");
+        return std::unexpected(
+            solver::Error(solver::Error::Type::NotImplemented,
+                          "solving for polynomials of order > 4 is not implemented"));
     }
 }
 

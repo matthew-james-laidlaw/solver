@@ -31,9 +31,11 @@ namespace solver
 
 auto Polynomial::FromTerms(std::vector<Monomial> terms) -> Polynomial
 {
-    if (terms.size() == 0) {
-        throw std::runtime_error(
-            "a polynomial cannot be constructed with an empty list of monomials");
+    Polynomial polynomial;
+    polynomial.m_terms = {};
+
+    if (terms.empty()) {
+        return polynomial;
     }
 
     int order = 0;
@@ -41,7 +43,6 @@ auto Polynomial::FromTerms(std::vector<Monomial> terms) -> Polynomial
         order = std::max(order, term.Exponent());
     }
 
-    Polynomial polynomial;
     polynomial.m_terms = std::vector<int>(order + 1, 0);
     for (auto term : terms) {
         if (term.Exponent() >= 0) {
@@ -56,35 +57,22 @@ auto Polynomial::FromCoeffs(std::vector<int> coeffs) -> Polynomial
 {
     Polynomial polynomial;
     polynomial.m_terms = coeffs;
-    if (coeffs.size() == 0) {
-        throw std::runtime_error(
-            "a polynomial cannot be constructed with an empty list of coefficients");
-    }
     return polynomial;
 }
 
 auto Polynomial::operator[](size_t i) const -> int
 {
-    CheckBounds(i);
     return m_terms[i];
 }
 
 auto Polynomial::operator[](size_t i) -> int&
 {
-    CheckBounds(i);
     return m_terms[i];
 }
 
 auto Polynomial::Size() const -> size_t
 {
     return m_terms.size();
-}
-
-auto Polynomial::CheckBounds(size_t i) const -> void
-{
-    if (i >= m_terms.size()) {
-        throw std::runtime_error("out of bounds access in polynomial");
-    }
 }
 
 auto operator+(const Polynomial& a, const Polynomial& b) -> Polynomial
