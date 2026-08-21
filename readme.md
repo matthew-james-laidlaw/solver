@@ -21,8 +21,6 @@ The combinator library consists of parsing primitives and overloaded operators t
 ## TODO
 
 * Fuzz testing
-* Solutions near zero should be reported as 0 e.g., 1e-19 => 0
-* Better CLI flags
 
 1.0.0 features
 * Can accept polynomials of simple format e.g.
@@ -31,3 +29,5 @@ The combinator library consists of parsing primitives and overloaded operators t
 *    subtraction too
 *    c and n are integers, n is nonnegative integer
 * Solves up to 3rd order polynomials
+* Proper documentation
+* User testing

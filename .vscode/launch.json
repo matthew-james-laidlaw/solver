@@ -8,8 +8,7 @@
             "program": "${command:cmake.launchTargetPath}",
             "cwd": "${workspaceFolder}",
             "args": [
-                "--function",
-                "f(x) = "
+                "f(x) = x^2 - 4x + 13"
             ],
         },
         {
