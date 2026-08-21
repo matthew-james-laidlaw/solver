@@ -84,14 +84,10 @@ auto SolvePolynomial(const solver::Polynomial& equation)
         return SolveSecondOrder(equation);
     case 4:
         return SolveThirdOrder(equation);
-    case 5:
-        return std::unexpected(
-            solver::Error(solver::Error::Type::NotImplemented,
-                          "solving for polynomials of order 4 is not implemented"));
     default:
         return std::unexpected(
             solver::Error(solver::Error::Type::NotImplemented,
-                          "solving for polynomials of order > 4 is not implemented"));
+                          "solving for polynomials of order > 3 is not implemented"));
     }
 }
 
@@ -109,6 +105,15 @@ auto Solve(const std::string& equation) -> std::expected<Solution, Error>
 
     auto solutions = SolvePolynomial(*polynomial);
     return solutions;
+}
+
+Error::Error(Type type, const std::string& message)
+    : type(type), message(message)
+{}
+
+auto operator==(const Error& a, const Error& b) -> bool
+{
+    return a.type == b.type && a.message == b.message;
 }
 
 } // namespace solver

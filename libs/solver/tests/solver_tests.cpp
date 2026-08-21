@@ -87,16 +87,6 @@ TEST(SolverTests, solve_third_order_polynomial)
     AssertSolutionsEquivalent(expected_solution, *actual_solution);
 }
 
-TEST(SolverTests, solve_fourth_order_polynomial_fails)
-{
-    auto equation = "f(x) = x^4 - 6x^2 + 11x - 6"s;
-    auto solution = Solve(equation);
-    ASSERT_FALSE(solution);
-    ASSERT_EQ(solution.error(),
-              Error(Error::Type::NotImplemented,
-                    "solving for polynomials of order 4 is not implemented"));
-}
-
 TEST(SolverTests, solve_fifth_order_polynomial_fails)
 {
     auto equation = "f(x) = x^5 - 6x^2 + 11x - 6"s;
@@ -104,5 +94,5 @@ TEST(SolverTests, solve_fifth_order_polynomial_fails)
     ASSERT_FALSE(solution);
     ASSERT_EQ(solution.error(),
               Error(Error::Type::NotImplemented,
-                    "solving for polynomials of order > 4 is not implemented"));
+                    "solving for polynomials of order > 3 is not implemented"));
 }

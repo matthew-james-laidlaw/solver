@@ -26,20 +26,21 @@ auto Expect(typename TokenType::Type type, std::string_view what) -> Parser<Toke
         std::string(what),
         [=](State<TokenType> state) -> Result<TokenType, TokenType>
         {
-            if (state.Done()) {
+            auto current = state.Peek();
+            if (!current)
+            {
                 return Result<TokenType, TokenType>::Failure(
                     state,
                     std::format("parser error: unexpected end of input, expected '{}'", what));
             }
 
-            auto current = state.Peek();
-            if (current.type != type) {
+            if (current->type != type) {
                 return Result<TokenType, TokenType>::Failure(
                     state,
-                    std::format("parser error: expected '{}', got '{}'", what, current.lexeme));
+                    std::format("parser error: expected '{}', got '{}'", what, current->lexeme));
             }
 
-            return Result<TokenType, TokenType>::Success(current, state.Advance());
+            return Result<TokenType, TokenType>::Success(*current, state.Advance());
         });
 }
 

@@ -3,6 +3,7 @@
 #include <combinator/state.h>
 
 #include <optional>
+#include <stdexcept>
 #include <string>
 
 namespace combinator
@@ -48,6 +49,9 @@ public:
 
     auto Value() const -> const T&
     {
+        if (!m_value) {
+            throw std::runtime_error("attempted to dereference an empty optional");
+        }
         return *m_value;
     }
 

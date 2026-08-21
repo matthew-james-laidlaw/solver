@@ -21,7 +21,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 # --- external dependencies ---
 cpm_add_cli11()
 cpm_add_googletest()
-cpm_add_spdlog()
 
 # --- global flags ---
 if(MSVC)

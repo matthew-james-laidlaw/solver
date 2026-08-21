@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <span>
 
 namespace combinator
@@ -25,13 +26,19 @@ public:
         return m_source.empty();
     }
 
-    auto Peek() const -> TokenType
+    auto Peek() const -> std::optional<TokenType>
     {
-        return m_source.front();
+        if (!m_source.empty()) {
+            return m_source.front();
+        }
+        return std::nullopt;
     }
 
     auto Advance() const -> State
     {
+        if (m_source.empty()) {
+            return m_source;
+        }
         return m_source.subspan(1);
     }
 };

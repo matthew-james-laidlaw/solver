@@ -5,6 +5,7 @@
 
 #include <format>
 #include <functional>
+#include <stdexcept>
 #include <string>
 
 namespace combinator
